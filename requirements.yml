@@ -1,0 +1,9 @@
+---
+- src: https://github.com/shrikeh/ansible-sudo.git
+  name: role_sudo
+
+- src: opsmatic.opsmatic
+- src: avelis.dome9
+- src: debops.rsyslog
+
+...
