@@ -1,0 +1,3 @@
+---
+sudo_sudoers_template: roles/sudo/templates/sudoers.j2
+...

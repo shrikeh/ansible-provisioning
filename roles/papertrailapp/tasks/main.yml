@@ -1,0 +1,9 @@
+---
+- name: Find out which type of config is present for logging
+  command: "ls -d /etc/*syslog*"
+  register: papertrailapp_logger
+
+- name: Debug which one we have
+  debug: var=papertrailapp_logger
+
+...
