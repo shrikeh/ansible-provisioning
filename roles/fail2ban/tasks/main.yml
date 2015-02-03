@@ -1,0 +1,4 @@
+---
+- name: Install fail2ban
+  include: install.yml
+...

@@ -1,0 +1,11 @@
+---
+- name: Change the hostname
+  hostname: name="{{ hostname_name | mandatory }}"
+
+- name:     Change sysctl to ensure the hostname is also the same
+  sysctl:   >
+            name="kernel.hostname"
+            state="present"
+            value="{{ hostname_kernelname | mandatory }}"
+            reload=yes
+...

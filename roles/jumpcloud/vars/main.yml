@@ -1,3 +1,4 @@
 ---
-
+jumpcloud_x_connect_key: "{{ enc_jumpcloud_x_connect_key | mandatory}}"
+jumpcloud_x_connect_url: 'https://kickstart.jumpcloud.com/Kickstart'
 ...

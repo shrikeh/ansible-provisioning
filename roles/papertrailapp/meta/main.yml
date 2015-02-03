@@ -1,4 +1,5 @@
 ---
 dependencies:
-  - { role: debops.rsyslog }
+  - { role: debops.rsyslog, when: ansible_pkg_mgr == 'apt' }
+  - { role: hostname }
 ...

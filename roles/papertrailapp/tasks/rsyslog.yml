@@ -1,14 +1,4 @@
 ---
-- name: Find out which type of config is present for logging
-  shell: "ls -d /etc/*syslog*"
-  register: papertrailapp_logger
-
-- name: Debug which one we have
-  debug: var=papertrailapp_logger
-
-- include: rsyslog.yml
-  when: papertrailapp_logger.stdout.find('/etc/ryslog.conf')
-
 - name: Add papertrailapp to rsyslog
   lineinfile: >
     line="*.*          @{{ papertrail_app_url | mandatory }}:{{ papertrailapp_port | mandatory }}"
@@ -21,5 +11,4 @@
   service: >
     name='rsyslog'
     state='restarted'
-
 ...

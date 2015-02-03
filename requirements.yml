@@ -1,9 +1,11 @@
 ---
-- src: https://github.com/shrikeh/ansible-sudo.git
-  name: role_sudo
+- src:     https://github.com/shrikeh/ansible-sudo.git
+  name:    role_sudo
 
-- src: opsmatic.opsmatic
-- src: avelis.dome9
-- src: debops.rsyslog
-
+- src:      magnus919.epel
+- src:      bennojoy.ntp
+- src:      opsmatic.opsmatic
+- src:      avelis.dome9
+- src:      debops.rsyslog
+- src:      resmo.fail2ban
 ...

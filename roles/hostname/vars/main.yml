@@ -1,0 +1,4 @@
+---
+hostname_name: 'wibble'
+hostname_kernelname: "{{ hostname_name }}"
+...

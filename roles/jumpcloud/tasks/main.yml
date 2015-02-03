@@ -1,3 +1,7 @@
 ---
+- name: Install JumpCloud
+  shell: "curl --header 'x-connect-key: {{ jumpcloud_x_connect_key | mandatory }}' {{ jumpcloud_x_connect_url | mandatory }} | bash"
 
+- name: Restart the JCagent
+  service: name=jcagent state=restarted
 ...
