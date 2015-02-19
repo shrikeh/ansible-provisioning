@@ -1,3 +1,4 @@
 ---
-#sudo_sudoers_template: roles/sudo/templates/sudoers.j2
+sudo_groups:
+  - { gid: 2000 }
 ...

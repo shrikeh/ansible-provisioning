@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    hostname_name: 'test'
+  vars_files:
+  - vault.yml
+  roles:
+  - { role: digital-ocean }
+
+- hosts: do
+  remote_user: root
+  tasks:
+  - name: Wait for port 22 to become available.
+    local_action: "wait_for port=22 host={{ inventory_hostname }}"
+
+- include: provision.yml
+...

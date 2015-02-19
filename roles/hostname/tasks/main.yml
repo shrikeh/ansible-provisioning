@@ -8,4 +8,5 @@
             state="present"
             value="{{ hostname_kernelname | mandatory }}"
             reload=yes
+            ignoreerrors=yes
 ...

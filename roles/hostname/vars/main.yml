@@ -1,4 +1,3 @@
 ---
-hostname_name: 'wibble'
-hostname_kernelname: "{{ hostname_name }}"
+hostname_kernelname: "{{ hostname_name | mandatory }}"
 ...

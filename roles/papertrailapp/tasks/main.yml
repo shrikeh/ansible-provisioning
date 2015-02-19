@@ -9,17 +9,4 @@
 - include: rsyslog.yml
   when: papertrailapp_logger.stdout.find('/etc/ryslog.conf')
 
-- name: Add papertrailapp to rsyslog
-  lineinfile: >
-    line="*.*          @{{ papertrail_app_url | mandatory }}:{{ papertrailapp_port | mandatory }}"
-    state=present
-    insertafter=EOF
-    dest="/etc/rsyslog.conf"
-
-
-- name: Restart rsyslog
-  service: >
-    name='rsyslog'
-    state='restarted'
-
 ...

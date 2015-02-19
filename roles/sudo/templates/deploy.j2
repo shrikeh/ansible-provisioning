@@ -1,0 +1,5 @@
+## {{ ansible_managed }}
+
+Defaults:%#{{ item.gid | mandatory }}  !requiretty
+
+%#{{ item.gid | mandatory }}    ALL=(ALL:ALL) NOPASSWD: ALL

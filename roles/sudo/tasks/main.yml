@@ -1,0 +1,12 @@
+---
+- name: Add the deploy group to sudoers.d
+  template: >
+    src='deploy.j2'
+    dest='/etc/sudoers.d/deploy'
+    owner='root'
+    group='root'
+    mode='0640'
+    validate='visudo -cf %s'
+  with_items:
+      sudo_groups
+...

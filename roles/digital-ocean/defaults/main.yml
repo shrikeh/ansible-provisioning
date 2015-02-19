@@ -1,0 +1,8 @@
+---
+digital_ocean_v1_client_id: "{{ enc_do_v1_client_id }}"
+digital_ocean_v1_api_key: "{{ enc_do_v1_api_key }}"
+digital_ocean_size_id: "{{ do_size_id | default('63') }}"
+digital_ocean_image_id: "{{ do_image_id | default('10325992') }}"
+digital_ocean_region_id: "{{ do_region_id | default('7') }}"
+digital_ocean_ssh_key_ids: '671586'
+...
