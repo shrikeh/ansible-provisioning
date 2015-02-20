@@ -1,6 +1,7 @@
 ---
-- hosts: all
-
+- hosts: provision
+  vars_files:
+  - vault.yml
   roles:
   - { role: security }
   - { role: monitoring }

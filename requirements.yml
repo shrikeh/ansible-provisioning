@@ -2,7 +2,7 @@
 - src:     https://github.com/shrikeh/ansible-sudo.git
   name:    role_sudo
 
-- src:      magnus919.epel
+- src:      goozbach.EPEL
 - src:      bennojoy.ntp
 - src:      opsmatic.opsmatic
 - src:      avelis.dome9

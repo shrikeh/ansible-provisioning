@@ -14,9 +14,4 @@
     unique_name=yes
   register: do
 
-- name: Add new host to our inventory.
-  add_host:
-    name: "{{ do.droplet.ip_address }}"
-    groups: do
-  when: do.droplet is defined
 ...

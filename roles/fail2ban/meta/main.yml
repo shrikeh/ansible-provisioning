@@ -1,4 +1,4 @@
 ---
 dependencies:
-  - { role: magnus919.epel, when: ansible_pkg_mgr == 'yum' }
+  - { role: epel, when: ansible_pkg_mgr == 'yum' }
 ...

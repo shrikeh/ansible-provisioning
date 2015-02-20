@@ -2,18 +2,28 @@
 - hosts: localhost
   connection: local
   gather_facts: false
-  vars:
-    hostname_name: 'test'
   vars_files:
   - vault.yml
   roles:
   - { role: digital-ocean }
+  tasks:
+    - name: Add new host to our inventory.
+      add_host:
+        name: "{{ do.droplet.ip_address }}"
+        groups: provision
+      when: do.droplet is defined
 
-- hosts: do
+- hosts: provision
   remote_user: root
+  gather_facts: false
   tasks:
   - name: Wait for port 22 to become available.
-    local_action: "wait_for port=22 host={{ inventory_hostname }}"
+    local_action: >
+      wait_for
+      port=22
+      host="{{ inventory_hostname }}"
+      timeout=300
+      delay=30
 
 - include: provision.yml
 ...
