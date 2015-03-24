@@ -1,8 +1,8 @@
 ---
-- name: Add the deploy group to sudoers.d
+- name: Add the groups to sudoers.d
   template: >
     src='deploy.j2'
-    dest='/etc/sudoers.d/deploy'
+    dest="/etc/sudoers.d/{{ item.name }}"
     owner='root'
     group='root'
     mode='0640'

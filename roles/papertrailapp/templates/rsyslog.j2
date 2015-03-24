@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+$DefaultNetstreamDriverCAFile {{ papertrail_app_ca_path }} # trust these CAs
+$ActionSendStreamDriver gtls # use gtls netstream driver
+$ActionSendStreamDriverMode 1 # require TLS
+$ActionSendStreamDriverAuthMode x509/name # authenticate by hostname
+$ActionSendStreamDriverPermittedPeer *.papertrailapp.com
+
+*.*  @@{{ papertrail_app_url | mandatory }}:{{ papertrailapp_port | mandatory }}

@@ -1,3 +1,7 @@
 ---
-papertrail_app_url: "logs.papertrailapp.com"
+papertrail_app_ca_bundle: 'https://papertrailapp.com/tools/papertrail-bundle.pem'
+papertrail_app_ca_path: '/etc/papertrail-bundle.pem'
+papertrail_app_rsyslogd_path: '/etc/rsyslog.d'
+papertrail_app_ca_checksum: 'c75ce425e553e416bde4e412439e3d09'
+papertrail_app_url: 'logs.papertrailapp.com'
 ...

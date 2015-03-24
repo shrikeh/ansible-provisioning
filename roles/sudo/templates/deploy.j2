@@ -1,5 +1,6 @@
 ## {{ ansible_managed }}
+{% if item.no_requiretty | default(false) %}
+Defaults:%#{{ item.gid | mandatory }} !requiretty
+{% endif %}
 
-Defaults:%#{{ item.gid | mandatory }}  !requiretty
-
-%#{{ item.gid | mandatory }}    ALL=(ALL:ALL) NOPASSWD: ALL
+%#{{ item.gid | mandatory }}    {{ item.permissions }}

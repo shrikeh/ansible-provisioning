@@ -1,3 +1,4 @@
 ---
+hostname_name: "{{ inventory_hostname }}"
 hostname_kernelname: "{{ hostname_name | mandatory }}"
 ...

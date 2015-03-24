@@ -1,7 +1,23 @@
 ---
+
+- include: do.yml
+- include: rax.yml
+
+- hosts: provision
+  remote_user: root
+  gather_facts: false
+  tasks:
+  - name: Wait for port 22 to become available.
+    local_action: >
+      wait_for
+      port=22
+      host="{{ inventory_hostname }}"
+      timeout=300
+      delay=30
+
 - hosts: provision
   vars_files:
-  - vault.yml
+    - vault.yml
   roles:
   - { role: security }
   - { role: monitoring }

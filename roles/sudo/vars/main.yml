@@ -1,4 +1,18 @@
 ---
 sudo_groups:
-  - { gid: 2000 }
+  - gid: 2000
+    name: inviqa-support
+    permissions: 'ALL=(ALL:ALL) NOPASSWD: ALL'
+  - gid: 2001
+    name: inviqa-support-ooh
+    permissions: 'ALL=(ALL:ALL) ALL'
+  - gid: 2002
+    name: inviqa-ttls
+    permissions: 'ALL=(ALL:ALL) NOPASSWD: ALL'
+  - gid: 2003
+    name: inviqa-provisioning
+    permissions: 'ALL=(root) NOPASSWD: ALL'
+  - gid: 2004
+    name: inviqa-deploy
+    permissions: 'ALL=(deploy) NOPASSWD: ALL'
 ...

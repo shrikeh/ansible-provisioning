@@ -1,0 +1,26 @@
+---
+- name: Upload a public key for use on Rackspace
+  local_action:
+    module:     rax_keypair
+    api_key:    "bbb3943746f0d83ec9102333c4a9c716"
+    public_key: "{{ ssh_provisioning_public_key }}"
+    username:   "leftfielddigital"
+    name:       "{{ ssh_provisioning_public_key_name }}"
+    region:      "{{ rackspace_cloud_region | default('DFW') }}"
+    state:      present
+
+
+- name: Create a new Rax cloud box
+  local_action:
+    module:      rax
+    api_key:     "bbb3943746f0d83ec9102333c4a9c716"
+    username:    "leftfielddigital"
+    key_name:    "{{ ssh_provisioning_public_key_name }}"
+    flavor:      "5"
+    image:       "4f465d85-4512-44a9-9301-0412f0928f8b"
+    name:        "{{ inventory_hostname }}"
+    region:      "{{ rackspace_cloud_region | default('DFW') }}"
+    state:       present
+    tenant_id:   "425037"
+    wait:        yes
+...
