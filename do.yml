@@ -2,8 +2,6 @@
 - hosts: digital-ocean
   connection: local
   gather_facts: false
-  vars_files:
-    - vault.yml
   roles:
   - { role: digital-ocean }
   tasks:

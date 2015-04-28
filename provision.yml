@@ -16,9 +16,13 @@
       delay=30
 
 - hosts: provision
-  vars_files:
-    - vault.yml
   roles:
   - { role: security }
   - { role: monitoring }
+
+- hosts: qualysguard
+  connection: local
+  gather_facts: false
+  roles:
+  - { role: qualysguard }
 ...

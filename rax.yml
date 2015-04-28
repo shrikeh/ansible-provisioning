@@ -2,10 +2,8 @@
 - hosts: rackspace-cloud
   connection: local
   gather_facts: false
-  vars_files:
-    - vault.yml
   vars:
-    client_id: 'wibble'
+    client_id: 'inviqa'
     ssh_provisioning_public_key_name: 'Inviqa Deploy'
   roles:
     - { role: rackspace-cloud }

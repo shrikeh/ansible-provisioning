@@ -1,4 +1,5 @@
 ## {{ ansible_managed }}
+## {{ item.name }}
 {% if item.no_requiretty | default(false) %}
 Defaults:%#{{ item.gid | mandatory }} !requiretty
 {% endif %}
