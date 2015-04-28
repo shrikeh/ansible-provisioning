@@ -1,3 +1,0 @@
----
-  - name: Restart Dome9 Agent
-    shell: dome9d stop; dome9d start
