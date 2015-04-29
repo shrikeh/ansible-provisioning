@@ -25,6 +25,7 @@ function provision_box() {
 
   echo 'Installing ansible roles from Galaxy';
 
+  mkdir -p "${ANSIBLE_ROLES_PATH}";
   ansible-galaxy install \
     -r "${ANSIBLE_ROLES_FILE}" \
     -p "${ANSIBLE_ROLES_PATH}" \
