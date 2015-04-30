@@ -76,39 +76,39 @@ function provision_box() {
     key="$1"
     case $key in
       -h|--host)
-      local PROVISION_HOSTNAME="${2}"
+        local PROVISION_HOSTNAME="${2}"
       shift
       ;;
       -i|--inventory)
-      INVENTORY_FILE="${2}"
+        INVENTORY_FILE="${2}"
       shift
       ;;
       -u|--user)
-      REMOTE_USER="${2}"
+        REMOTE_USER="${2}"
       shift
       ;;
       -p|--playbook)
-      PLAYBOOK_PATH="${2}"
+        PLAYBOOK_PATH="${2}"
       shift
       ;;
       --rfile)
-      ANSIBLE_ROLES_FILE="$2"
+        ANSIBLE_ROLES_FILE="$2"
       shift
       ;;
       --rpath)
-      ANSIBLE_ROLES_PATH="$2"
+        ANSIBLE_ROLES_PATH="$2"
       shift
       ;;
       --venv)
-      ANSIBLE_VENV="$2"
+        ANSIBLE_VENV="$2"
       shift
       ;;
       --pfile)
-      REQUIREMENTS_PIP_FILE="$2"
+        REQUIREMENTS_PIP_FILE="$2"
       shift
       ;;
       --default)
-      DEFAULT=YES
+        DEFAULT=YES
       shift
       ;;
       *)
@@ -118,8 +118,6 @@ function provision_box() {
     shift
   done
 
-  echo "${REQUIREMENTS_PIP_FILE} ${ANSIBLE_VENV} ${ANSIBLE_ROLES_PATH} ${ANSIBLE_ROLES_FILE}";
-  return;
   # Make sure we have virtualenv
   _get_virtualenv;
 
