@@ -1,0 +1,43 @@
+---
+inviqa_ip_whitelist:
+  - name: frontdoor_old
+    ips:
+      - 78.109.163.185
+  - name: frontdoor1
+    ips:
+      - 204.236.239.215
+  - name: frontdoor2
+    ips:
+      - 79.125.120.235
+  - name: office_london
+    ips:
+      - 141.0.34.138
+      - 62.49.114.11
+      - 141.0.34.136/29
+  - name: office_sheffield
+    ips:
+      - 81.23.63.12
+  - name: office_leeds
+    ips:
+      - 88.211.104.155
+  - name: office_manchester
+    ips:
+      - 151.237.238.126
+  - name: scothost_vpn
+    ips:
+      - 88.208.220.171
+  - name: office_liverpool
+    ips:
+      - 37.191.108.74
+  - name: office_kaunas
+    ips:
+      - 87.247.82.92
+  - name:   office_munich
+    ips:
+      - 188.195.171.27
+      - 178.26.189.94
+      - 213.179.151.214
+  - name: qualys
+    ips:
+      - 64.39.96.0/20
+...

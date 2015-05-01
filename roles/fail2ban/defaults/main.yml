@@ -1,0 +1,37 @@
+---
+fail2ban_localjail_path: /etc/fail2ban/jail.local
+fail2ban_localjail_template: jail.local.j2
+fail2ban_localjail_owner: root
+fail2ban_localjail_group: root
+fail2ban_localjail_mode: '0600'
+
+fail2ban_ignoreip:
+  - '127.0.0.1/8'
+
+fail2ban_bantime: 600
+fail2ban_findtime: 600
+fail2ban_maxretry: 3
+fail2ban_backend: auto
+fail2ban_usedns: warn
+fail2ban_destemail: root@localhost
+fail2ban_sendername: Fail2Ban
+fail2ban_banaction: iptables-multiport
+fail2ban_mta: sendmail
+fail2ban_protocol: tcp
+fail2ban_chain: INPUT
+fail2ban_actions:
+  action_: '%(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]'
+  action_mw: '%(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+                %(mta)s-whois[name=%(__name__)s, dest="%(destemail)s", protocol="%(protocol)s", chain="%(chain)s", sendername="%(sendername)s"]'
+  action_mwl: '%(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+                 %(mta)s-whois-lines[name=%(__name__)s, dest="%(destemail)s", logpath=%(logpath)s, chain="%(chain)s", sendername="%(sendername)s"]'
+fail2ban_default_action: action_
+
+fail2ban_jails_ssh:
+  enabled: 'true'
+  port: 'ssh'
+  filter: sshd
+  logpath: /var/log/auth.log
+  maxretry: 6
+
+...

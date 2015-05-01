@@ -69,6 +69,7 @@ function provision_box() {
   local INVENTORY_FILE='./inventory';
   local PLAYBOOK_PATH='./provision.yml';
   local ANSIBLE_VENV='ansible-provision';
+  local SKIP_VENV=false;
 
   local -a ARGV=("${!1}");
 
@@ -85,6 +86,10 @@ function provision_box() {
       ;;
       -u|--user)
         REMOTE_USER="${2}"
+      shift
+      ;;
+      --skipvenv)
+       SKIP_VENV=true
       shift
       ;;
       -p|--playbook)
@@ -119,8 +124,10 @@ function provision_box() {
   done
 
   # Make sure we have virtualenv
-  _get_virtualenv;
-
+  if [ "${SKIP_VENV}" = false ]; then
+    _get_virtualenv;
+  fi;
+  
   # Start it
   _start_venv "${ANSIBLE_VENV}";
 
@@ -140,6 +147,5 @@ function provision_box() {
   echo 'Deactivating virtual env';
   deactivate;
 }
-
 
 provision_box ${@}
