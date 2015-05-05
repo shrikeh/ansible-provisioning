@@ -38,4 +38,5 @@ fail2ban_default_action: action_
 
 fail2ban_jails:
   - "{{ fail2ban_jails_ssh }}"
+  - "{{ fail2ban_jails_ssh_iptables }}"
 ...

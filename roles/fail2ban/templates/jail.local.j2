@@ -126,12 +126,12 @@ action = %({{ fail2ban_default_action | default('action') }})s
 # action, port, logpath, etc) in that section within jail.local
 
 {% for jail in fail2ban_jails %}
-[jail.name]
+[{{ jail.name }}]
 enabled = true
-
-{% if jail.maxretry %}
-{% for key, value in jail.iteritems() %}
-{% if key != 'name' %}
+{% for key, value in jail.iteritems() -%}
+{% if key != 'name' -%}
 {{ key }} = {{ value }}
 {% endif %}
+{% endfor %}
+
 {% endfor %}

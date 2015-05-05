@@ -1,4 +1,5 @@
 ---
+
 - name: Include CentOS
   include: centos.yml
   when: ansible_pkg_mgr == 'yum'
@@ -6,7 +7,9 @@
 - name: Include Debian
   include: debian.yml
   when: ansible_pkg_mgr == 'apt'
-  
+
+- name: Include jails
+  include_vars: jails.yml
 
 - name: Put the local jail in place
   template: >
