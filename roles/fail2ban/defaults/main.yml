@@ -5,15 +5,23 @@ fail2ban_localjail_owner: root
 fail2ban_localjail_group: root
 fail2ban_localjail_mode: '0600'
 
-fail2ban_ignoreip:
+fail2ban_default_ips:
   - '127.0.0.1/8'
 
-fail2ban_bantime: 600
+# Doing it this way allows the default IPs to be merged with other hosts using
+# "{{ array1 + array2 }}" jinja syntax
+fail2ban_ignoreip: "{{ fail2ban_default_ips }}"
+
+fail2ban_auth_log: "{{ fail2ban_distro_auth_log }}"
+
+
+fail2ban_bantime: 60
 fail2ban_findtime: 600
 fail2ban_maxretry: 3
 fail2ban_backend: auto
 fail2ban_usedns: warn
-fail2ban_destemail: root@localhost
+fail2ban_send_email: fail2ban@example.com
+fail2ban_dest_email: root@localhost
 fail2ban_sendername: Fail2Ban
 fail2ban_banaction: iptables-multiport
 fail2ban_mta: sendmail
@@ -27,11 +35,7 @@ fail2ban_actions:
                  %(mta)s-whois-lines[name=%(__name__)s, dest="%(destemail)s", logpath=%(logpath)s, chain="%(chain)s", sendername="%(sendername)s"]'
 fail2ban_default_action: action_
 
-fail2ban_jails_ssh:
-  enabled: 'true'
-  port: 'ssh'
-  filter: sshd
-  logpath: /var/log/auth.log
-  maxretry: 6
 
+fail2ban_jails:
+  - "{{ fail2ban_jails_ssh }}"
 ...

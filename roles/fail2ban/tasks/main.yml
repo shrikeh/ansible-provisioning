@@ -1,6 +1,12 @@
 ---
-- name: Install fail2ban
-  include: install.yml
+- name: Include CentOS
+  include: centos.yml
+  when: ansible_pkg_mgr == 'yum'
+
+- name: Include Debian
+  include: debian.yml
+  when: ansible_pkg_mgr == 'apt'
+  
 
 - name: Put the local jail in place
   template: >
@@ -9,4 +15,9 @@
     owner="{{ fail2ban_localjail_owner | default('root') }}"
     group="{{ fail2ban_localjail_group | default('root') }}"
     mode="{{ fail2ban_localjail_mode | default('0600') }}"
+
+- name: Start fail2ban
+  service: >
+    name=fail2ban
+    state=restarted
 ...

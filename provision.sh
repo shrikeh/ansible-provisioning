@@ -62,6 +62,8 @@ function _run_playbook() {
 }
 
 function provision_box() {
+  echo /usr/bin/env
+  
   local ANSIBLE_ROLES_FILE='requirements.yml';
   local ANSIBLE_ROLES_PATH='./galaxy'
   local REMOTE_USER='root';
@@ -124,10 +126,9 @@ function provision_box() {
   done
 
   # Make sure we have virtualenv
-  if [ "${SKIP_VENV}" = false ]; then
     _get_virtualenv;
-  fi;
-  
+
+
   # Start it
   _start_venv "${ANSIBLE_VENV}";
 
