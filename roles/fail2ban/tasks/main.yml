@@ -11,6 +11,38 @@
 - name: Include jails
   include_vars: jails.yml
 
+- name: Make sure the filter.d folder exists
+  file: >
+    path="{{ fail2ban_filter_dir }}"
+    owner="{{ fail2ban_filter_owner | default('root') }}"
+    group="{{ fail2ban_filter_group | default('root') }}"
+    mode="{{ fail2ban_filter_mode | default('0600') }}"
+    state=directory
+
+- name: Include the list of filters
+  include_vars: filters.yml
+
+- debug: var="{{ item }}"
+  with_items: fail2ban_filters
+
+- name: Copy the correct filters into place
+  template: >
+    dest="{{ item.template.dest | default([fail2ban_filter_dir, '/', item.name, '.conf'] | join) }}"
+    src="{{ item.template.src }}"
+    owner="{{ fail2ban_filter_owner | default('root') }}"
+    group="{{ fail2ban_filter_group | default('root') }}"
+    mode="{{ fail2ban_filter_mode | default('0600') }}"
+  with_items:
+    fail2ban_filters
+
+- name: Make sure the action.d folder exists
+  file: >
+    path="{{ fail2ban_action_dir }}"
+    owner="{{ fail2ban_action_owner | default('root') }}"
+    group="{{ fail2ban_action_group | default('root') }}"
+    mode="{{ fail2ban_action_mode | default('0600') }}"
+    state=directory
+
 - name: Put the local jail in place
   template: >
     dest="{{ fail2ban_localjail_path | default('/etc/fail2ban/jail.local') }}"

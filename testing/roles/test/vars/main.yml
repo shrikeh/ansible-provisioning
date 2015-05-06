@@ -2,20 +2,24 @@
 fail2ban_jails_ssh:
   name: ssh
   config:
-    enabled: true
+    enabled: 'true'
     port: 'ssh'
     filter: sshd
-    logpath: "{{ fail2ban_auth_log }}"
+    logpath: "{{ fail2ban_auth_log | default ('foo') }}"
     maxretry: 6
 
 fail2ban_jails_ssh_iptables:
   name: ssh-iptables
   config:
-    enabled: false
+    enabled: 'false'
     filter: sshd
     action: |
       iptables[name=SSH, port=ssh, protocol=tcp]
       sendmail-whois[name=SSH, dest=you@example.com, sender=fail2ban@example.com, sendername="Fail2Ban"]
-    logpath: "{{ fail2ban_auth_log }}"
+    logpath: "{{ fail2ban_auth_log | default ('foo') }}"
     maxretry: 5
+
+fail2ban_jails:
+  - "{{ fail2ban_jails_ssh }}"
+  - "{{ fail2ban_jails_ssh_iptables }}"
 ...
