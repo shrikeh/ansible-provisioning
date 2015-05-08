@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 
 
+function _echo() {
+  echo -e "\033[1m\n${1}\n\033[0m";
+  tput sgr0;
+}
+
 # Get the prereqs for setting up a virtualenv
 function _get_virtualenv() {
-  echo 'Updating pip';
+  _echo 'Updating pip';
   pip install --upgrade pip;
 
-  echo 'Installing virtualenv';
+  _echo 'Installing virtualenv';
   pip install --upgrade virtualenv virtualenvwrapper;
 }
 
@@ -47,6 +52,7 @@ function _run_playbook() {
   local INVENTORY_FILE="${2}";
   local PLAYBOOK_PATH="${3}";
   local PROVISION_HOSTNAME="${4}";
+  local VAULT_PASSWORD_FILE="${5}";
 
   echo "Running playbook ${PLAYBOOK_PATH}";
 
@@ -54,8 +60,7 @@ function _run_playbook() {
     ansible-playbook -i "${INVENTORY_FILE}" \
       -vvvv \
       --user="${REMOTE_USER}" \
-      --ask-vault-pass \
-      -k \
+      --vault-password-file  "${VAULT_PASSWORD_FILE}"\
       "${PLAYBOOK_PATH}" \
       --extra-vars hostname_name="${PROVISION_HOSTNAME}" \
   );
@@ -63,7 +68,7 @@ function _run_playbook() {
 
 function provision_box() {
   echo /usr/bin/env
-  
+
   local ANSIBLE_ROLES_FILE='requirements.yml';
   local ANSIBLE_ROLES_PATH='./galaxy'
   local REMOTE_USER='root';
@@ -143,6 +148,7 @@ function provision_box() {
     "${INVENTORY_FILE}" \
     "${PLAYBOOK_PATH}" \
     "${PROVISION_HOSTNAME}" \
+    "~/.vault_password" \
     ;
 
   echo 'Deactivating virtual env';

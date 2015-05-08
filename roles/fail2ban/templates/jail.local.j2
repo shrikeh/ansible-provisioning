@@ -125,18 +125,36 @@ action = %({{ fail2ban_default_action | default('action') }})s
 # Optionally you may override any other parameter (e.g. banaction,
 # action, port, logpath, etc) in that section within jail.local
 {# This is a workaround so that we get the jails correctly indented -#}
-{% set max_key_length = [] -%}
-{% for config in fail2ban_jails|map(attribute='config') -%}
-  {% for key, val in config.iteritems() -%}
-    {% if max_key_length.append(key | length) %}{% endif %}
-  {% endfor %}
-{% endfor %}
-{% set max_key_length = max_key_length | max %}
+{%- set max_key_length = [] -%}
+{%- for config in fail2ban_jails|map(attribute='config') %}
+  {%- for key, val in config.iteritems() -%}
+    {%- if max_key_length.append(key | length) %}{% endif %}
+  {%- endfor %}
+{%- endfor %}
+{%- set max_key_length = max_key_length | max %}
 
-{% for jail in fail2ban_jails -%}
+{% for jail in fail2ban_jails %}
 [{{ jail.name }}]
-{% for key, value in jail.config.iteritems() -%}
-{{ key.ljust(max_key_length) }} = {{ value | string | indent(max_key_length + 3) }}
-{% endfor %}
+  {% for key, value in jail.config.iteritems() %}
+    {%- if value is iterable %}
+      {%- if (key == 'actions') %}
+action =
+        {%- for action in value %}
+        {%- set args = [] %}
+          {%- if action.args is defined %}
+            {%- for arg, val in action.args.iteritems() %}
+              {%- if args.append([arg, '=', val] | join) %}{%-endif %}
+            {%- endfor %}
+            {%- set args = args | join(',') %}
+          {%- endif %}
+{{- action.action.name | string | indent(max_key_length + 3) }}{%- if args %}[{{ args }}]{%- endif %}
+
+        {% endfor %}
+      {% endif %}
+    {% else %}
+{{- key }} = {{ value | string | indent(max_key_length + 3) }}
+    {% endif %}
+
+  {% endfor %}
 
 {% endfor %}
