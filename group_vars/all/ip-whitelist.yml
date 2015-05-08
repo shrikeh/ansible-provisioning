@@ -61,4 +61,5 @@ f2b_services: "{{ inviqa_ip_whitelist.scothost_vpn.ips + inviqa_ip_whitelist.qua
 inviqa_fail2ban_ignoreips: "{{ f2b_frontdoor + f2b_offices_uk + f2b_offices_eu + f2b_services | unique }}"
 
 fail2ban_ignoreip: "{{ fail2ban_default_ips + inviqa_fail2ban_ignoreips }}"
+
 ...

@@ -17,7 +17,8 @@
 {%- for key, value in jail.config.iteritems() %}
   {%- set jail_vals = [] %}
   {%- if (value is string) or (value is number) %}
-    {%- if jail_vals.append(value) %}{% endif %}
+    {#- simple scalar, append it #}
+    {%- if jail_vals.append(value | string) %}{% endif %}
   {%- else %}
     {%- if (key == 'filter') %}
     {%- if jail_vals.append(value.name) %}{% endif %}

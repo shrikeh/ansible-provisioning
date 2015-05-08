@@ -1,114 +1,6 @@
-# {{ ansible_managed }}
-#
-# Fail2Ban configuration file.
-#
-# This file was composed for Debian systems from the original one
-# provided now under /usr/share/doc/fail2ban/examples/jail.conf
-# for additional examples.
-#
-# Comments: use '#' for comment lines and ';' for inline comments
-#
-# To avoid merges during upgrades DO NOT MODIFY THIS FILE
-# and rather provide your changes in /etc/fail2ban/jail.local
-#
+{%- extends 'jail.base.j2' %}
 
-# The DEFAULT allows a global definition of the options. They can be overridden
-# in each jail afterwards.
-
-[DEFAULT]
-
-# "ignoreip" can be an IP address, a CIDR mask or a DNS host. Fail2ban will not
-# ban a host which matches an address in this list. Several addresses can be
-# defined using space separator.
-ignoreip ={% for ip in fail2ban_ignoreip %} {{ ip | ipaddr }}{% endfor %}
-
-# External command that will take an tagged arguments to ignore, e.g. <ip>,
-# and return true if the IP is to be ignored. False otherwise.
-#
-# ignorecommand = /path/to/command <ip>
-ignorecommand =
-
-# "bantime" is the number of seconds that a host is banned.
-bantime  = {{ fail2ban_bantime | default('600') }}
-
-# A host is banned if it has generated "maxretry" during the last "findtime"
-# seconds.
-findtime = {{ fail2ban_findtime | default('600') }}
-maxretry = {{ fail2ban_maxretry | default('3') }}
-
-# "backend" specifies the backend used to get files modification.
-# Available options are "pyinotify", "gamin", "polling" and "auto".
-# This option can be overridden in each jail as well.
-#
-# pyinotify: requires pyinotify (a file alteration monitor) to be installed.
-#            If pyinotify is not installed, Fail2ban will use auto.
-# gamin:     requires Gamin (a file alteration monitor) to be installed.
-#            If Gamin is not installed, Fail2ban will use auto.
-# polling:   uses a polling algorithm which does not require external libraries.
-# auto:      will try to use the following backends, in order:
-#            pyinotify, gamin, polling.
-backend = {{ fail2ban_backend | default('auto') }}
-
-# "usedns" specifies if jails should trust hostnames in logs,
-#   warn when reverse DNS lookups are performed, or ignore all hostnames in logs
-#
-# yes:   if a hostname is encountered, a reverse DNS lookup will be performed.
-# warn:  if a hostname is encountered, a reverse DNS lookup will be performed,
-#        but it will be logged as a warning.
-# no:    if a hostname is encountered, will not be used for banning,
-#        but it will be logged as info.
-usedns = {{ fail2ban_usedns | default('warn') }}
-
-#
-# Destination email address used solely for the interpolations in
-# jail.{conf,local} configuration files.
-destemail = {{ fail2ban_dest_email | default('root@localhost') }}
-
-#
-# Name of the sender for mta actions
-sendername = {{ fail2ban_sendername | default('Fail2Ban') }}
-
-#
-# ACTIONS
-#
-
-# Default banning action (e.g. iptables, iptables-new,
-# iptables-multiport, shorewall, etc) It is used to define
-# action_* variables. Can be overridden globally or per
-# section within jail.local file
-banaction = {{ fail2ban_banaction | default('iptables-multiport') }}
-
-# email action. Since 0.8.1 upstream fail2ban uses sendmail
-# MTA for the mailing. Change mta configuration parameter to mail
-# if you want to revert to conventional 'mail'.
-mta = {{ fail2ban_mta | default('sendmail') }}
-
-# Default protocol
-protocol = {{fail2ban_protocol | default('tcp') }}
-
-# Specify chain where jumps would need to be added in iptables-* actions
-chain = {{ fail2ban_chain | default('INPUT') }}
-
-#
-# Action shortcuts. To be used to define action parameter
-
-# The simplest action to take: ban only
-action_ = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
-
-# ban & send an e-mail with whois report to the destemail.
-action_mw = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
-              %(mta)s-whois[name=%(__name__)s, dest="%(destemail)s", protocol="%(protocol)s", chain="%(chain)s", sendername="%(sendername)s"]
-
-# ban & send an e-mail with whois report and relevant log lines
-# to the destemail.
-action_mwl = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
-               %(mta)s-whois-lines[name=%(__name__)s, dest="%(destemail)s", logpath=%(logpath)s, chain="%(chain)s", sendername="%(sendername)s"]
-
-# Choose default action.  To change, just override value of 'action' with the
-# interpolation to the chosen action shortcut (e.g.  action_mw, action_mwl, etc) in jail.local
-# globally (section [DEFAULT]) or per specific section
-action = %({{ fail2ban_default_action | default('action') }})s
-
+{% block jails %}
 #
 # JAILS
 #
@@ -124,6 +16,8 @@ action = %({{ fail2ban_default_action | default('action') }})s
 #
 # Optionally you may override any other parameter (e.g. banaction,
 # action, port, logpath, etc) in that section within jail.local
+
+{%- from 'macros.j2' import render_config with context %}
 {# This is a workaround so that we get the jails correctly indented -#}
 {%- set max_key_length = [] -%}
 {%- for config in fail2ban_jails|map(attribute='config') %}
@@ -132,29 +26,48 @@ action = %({{ fail2ban_default_action | default('action') }})s
   {%- endfor %}
 {%- endfor %}
 {%- set max_key_length = max_key_length | max %}
-
 {% for jail in fail2ban_jails %}
 [{{ jail.name }}]
-  {% for key, value in jail.config.iteritems() %}
-    {%- if value is iterable %}
-      {%- if (key == 'actions') %}
-action =
-        {%- for action in value %}
-        {%- set args = [] %}
-          {%- if action.args is defined %}
-            {%- for arg, val in action.args.iteritems() %}
-              {%- if args.append([arg, '=', val] | join) %}{%-endif %}
-            {%- endfor %}
-            {%- set args = args | join(',') %}
+
+{%- set jail_vars = {} %}
+{%- for key, value in jail.config.iteritems() %}
+  {%- set jail_vals = [] %}
+  {%- if (value is string) or (value is number) %}
+    {#- simple scalar, append it #}
+    {%- if jail_vals.append(value | string) %}{% endif %}
+  {%- else %}
+    {%- if (key == 'filter') %}
+    {%- if jail_vals.append(value.name) %}{% endif %}
+    {%- endif %}
+    {%- if (key == 'actions') %}
+      {%- set key = 'action' %}
+      {%- set actions = {} %}
+      {%- for act in value %}
+        {%- set action_args = '' %}
+        {%- if act.args is defined %}
+          {# this has additional arguments, let's concatenate them #}
+          {%- set args = [] %}
+          {%- for arg, val in act.args.iteritems() %}
+            {%- if args.append([arg, '=', val] | join) %}{%endif %}
+          {% endfor %}
+          {%- if args.count %}
+            {%- set action_args = ['[', args | join(','), ']'] | join %}
           {%- endif %}
-{{- action.action.name | string | indent(max_key_length + 3) }}{%- if args %}[{{ args }}]{%- endif %}
+        {% endif %}
 
-        {% endfor %}
-      {% endif %}
-    {% else %}
-{{- key }} = {{ value | string | indent(max_key_length + 3) }}
+        {%- if actions.update({act.action.name:action_args }) %}{%- endif %}
+      {% endfor %}
+      {%- for action_name, action_args in actions.iteritems() %}
+        {%- if jail_vals.append([action_name, action_args] | join(' ')) %}{% endif %}
+      {% endfor %}
     {% endif %}
+  {% endif %}
+  {%- if (jail_vars.update({key:jail_vals})) %}{%- endif %}
+{% endfor %}
 
-  {% endfor %}
+{% for key, vals in jail_vars.iteritems() %}
+{{ render_config(key, vals, max_key_length) }}
+{% endfor %}
 
 {% endfor %}
+{% endblock jails %}
