@@ -31,7 +31,7 @@ function _get_ansible_galaxy_roles() {
   local GALAXY_ROLES_FILE=${1};
   local GALAXY_ROLES_PATH=${2};
 
-  echo 'Installing ansible roles from Galaxy';
+  _echo 'Installing ansible roles from Galaxy';
   mkdir -p "${GALAXY_ROLES_PATH}";
   ansible-galaxy install \
     -r "${GALAXY_ROLES_FILE}" \
@@ -42,7 +42,7 @@ function _get_ansible_galaxy_roles() {
 
 function _get_pip_requirements() {
   local REQUIREMENTS_FILE=${1};
-  echo 'Installing module requirements via pip';
+  _echo 'Installing module requirements via pip';
   pip install -r "${REQUIREMENTS_FILE}";
 }
 
@@ -54,20 +54,19 @@ function _run_playbook() {
   local PROVISION_HOSTNAME="${4}";
   local VAULT_PASSWORD_FILE="${5}";
 
-  echo "Running playbook ${PLAYBOOK_PATH}";
+  _echo "Running playbook ${PLAYBOOK_PATH}";
 
-  (export ANSIBLE_ROLES_PATH=${1}; \
+  ( export ANSIBLE_ROLES_PATH=${1}; \
+    export ANSIBLE_HOST_KEY_CHECKING='no'; \
     ansible-playbook -i "${INVENTORY_FILE}" \
       -vvvv \
       --user="${REMOTE_USER}" \
       --vault-password-file  "${VAULT_PASSWORD_FILE}"\
       "${PLAYBOOK_PATH}" \
-      --extra-vars hostname_name="${PROVISION_HOSTNAME}" \
   );
 }
 
 function provision_box() {
-  echo /usr/bin/env
 
   local ANSIBLE_ROLES_FILE='requirements.yml';
   local ANSIBLE_ROLES_PATH='./galaxy'
@@ -76,47 +75,53 @@ function provision_box() {
   local INVENTORY_FILE='./inventory';
   local PLAYBOOK_PATH='./provision.yml';
   local ANSIBLE_VENV='ansible-provision';
+
+  local ANSIBLE_VAULT_PASSWORD_FILE=~/.provision_vault_password
   local SKIP_VENV=false;
 
   local -a ARGV=("${!1}");
 
-  while [[ $# > 0 ]]; do
-    key="$1"
+  while [[ ${#} > 0 ]]; do
+    key="${1}"
     case $key in
       -h|--host)
-        local PROVISION_HOSTNAME="${2}"
+        local PROVISION_HOSTNAME="${2}";
       shift
       ;;
       -i|--inventory)
-        INVENTORY_FILE="${2}"
+        INVENTORY_FILE="${2}";
       shift
       ;;
       -u|--user)
-        REMOTE_USER="${2}"
+        REMOTE_USER="${2}";
       shift
       ;;
       --skipvenv)
-       SKIP_VENV=true
+       SKIP_VENV=true;
       shift
       ;;
       -p|--playbook)
-        PLAYBOOK_PATH="${2}"
+        PLAYBOOK_PATH="${2}";
       shift
       ;;
       --rfile)
-        ANSIBLE_ROLES_FILE="$2"
+        ANSIBLE_ROLES_FILE="${2}";
       shift
       ;;
       --rpath)
-        ANSIBLE_ROLES_PATH="$2"
+        ANSIBLE_ROLES_PATH="${2}";
       shift
       ;;
       --venv)
-        ANSIBLE_VENV="$2"
+        ANSIBLE_VENV="${2}";
+      shift
+      ;;
+      -v|--vaultpassword)
+        ANSIBLE_VAULT_PASSWORD_FILE="${2}";
       shift
       ;;
       --pfile)
-        REQUIREMENTS_PIP_FILE="$2"
+        REQUIREMENTS_PIP_FILE="${2}";
       shift
       ;;
       --default)
@@ -148,10 +153,10 @@ function provision_box() {
     "${INVENTORY_FILE}" \
     "${PLAYBOOK_PATH}" \
     "${PROVISION_HOSTNAME}" \
-    "~/.vault_password" \
+    "${ANSIBLE_VAULT_PASSWORD_FILE}" \
     ;
 
-  echo 'Deactivating virtual env';
+  _echo 'Deactivating virtual env';
   deactivate;
 }
 

@@ -1,0 +1,64 @@
+---
+inviqa_ip_whitelist:
+  frontdoor_old:
+    name: Frontdoor (legacy)
+    ips:
+      - '78.109.163.185'
+  frontdoor1:
+    name: Frontdoor 1
+    ips:
+      - '204.236.239.215'
+  frontdoor2:
+    name: frontdoor2
+    ips:
+      - '79.125.120.235'
+  office_london:
+    name: London Office
+    ips:
+      - '141.0.34.138'
+      - '62.49.114.11'
+      - '141.0.34.136/29'
+  office_sheffield:
+    name: Sheffield Office
+    ips:
+      - '81.23.63.12'
+  office_leeds:
+    name: Leeds Office
+    ips:
+      - '88.211.104.155'
+  office_manchester:
+    name: Manchester Office
+    ips:
+      - '151.237.238.126'
+  scothost_vpn:
+    name: Scothost VPN
+    ips:
+      - '88.208.220.171'
+  office_liverpool:
+    name: Liverpool Office
+    ips:
+      - '37.191.108.74'
+  office_kaunas:
+    name: Kaunas (Lithuania)
+    ips:
+      - '87.247.82.92'
+  office_munich:
+    name: Munich office
+    ips:
+      - '188.195.171.27'
+      - '178.26.189.94'
+      - '213.179.151.214'
+  qualys:
+    name: QualysGuard scanner
+    ips:
+      - '64.39.96.0/20'
+
+f2b_frontdoor: "{{ inviqa_ip_whitelist.frontdoor_old.ips + inviqa_ip_whitelist.frontdoor1.ips + inviqa_ip_whitelist.frontdoor2.ips }}"
+f2b_offices_uk: "{{ inviqa_ip_whitelist.office_london.ips + inviqa_ip_whitelist.office_sheffield.ips + inviqa_ip_whitelist.office_leeds.ips + inviqa_ip_whitelist.office_manchester.ips + inviqa_ip_whitelist.office_liverpool.ips }}"
+f2b_offices_eu: "{{ inviqa_ip_whitelist.office_kaunas.ips + inviqa_ip_whitelist.office_munich.ips }}"
+f2b_services: "{{ inviqa_ip_whitelist.scothost_vpn.ips + inviqa_ip_whitelist.qualys.ips }}"
+
+inviqa_fail2ban_ignoreips: "{{ f2b_frontdoor + f2b_offices_uk + f2b_offices_eu + f2b_services | unique }}"
+
+fail2ban_ignoreip: "{{ fail2ban_default_ips + inviqa_fail2ban_ignoreips }}"
+...

@@ -17,9 +17,8 @@
 
 - hosts: provision
   roles:
-#  - { role: security }
-#  - { role: monitoring }
-   - { role: fail2ban }
+  - { role: security }
+  - { role: monitoring }
 
 - hosts: qualysguard
   connection: local

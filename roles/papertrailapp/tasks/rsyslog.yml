@@ -47,7 +47,6 @@
     insertafter=EOF
     dest="/etc/rsyslog.conf"
 
-
 - name: Restart rsyslog
   service: >
     name='rsyslog'
