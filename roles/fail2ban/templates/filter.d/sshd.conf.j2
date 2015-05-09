@@ -1,15 +1,15 @@
-# {{ ansible_managed }}
-#
-# Fail2Ban filter for openssh
-#
+{% extends 'filter.base.j2' %}
+{% block description %}Fail2Ban filter for openssh{% endblock description %}
 
+{% block includes %}
 [INCLUDES]
 
 # Read common prefixes. If any customizations available -- read them from
 # common.local
 before = common.conf
+{% endblock includes %}
 
-
+{% block definition %}
 [Definition]
 
 _daemon = sshd
@@ -28,7 +28,9 @@ failregex = ^%(__prefix_line)s(?:error: PAM: )?[aA]uthentication (?:failure|erro
             ^%(__prefix_line)sUser .+ from <HOST> not allowed because none of user's groups are listed in AllowGroups\s*$
 
 ignoreregex =
+{% endblock definition %}
 
+{% block notes %}
 # DEV Notes:
 #
 #   "Failed \S+ for .*? from <HOST>..." failregex uses non-greedy catch-all because
@@ -37,3 +39,4 @@ ignoreregex =
 #   matched away first.
 #
 # Author: Cyril Jaquier, Yaroslav Halchenko, Petr Voralek, Daniel Black
+{% endblock notes %}

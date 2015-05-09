@@ -1,16 +1,11 @@
 {% extends 'filter.base.j2' %}
-#
-# Fail2Ban filter for 3proxy
-#
-#
 
-[Definition]
+{% block description %}Fail2Ban filter for 3proxy{% endblock description %}
 
 
-failregex = ^\s[+-]\d{4} \S+ \d{3}0[1-9] \S+ <HOST>:\d+ [\d.]+:\d+ \d+ \d+ \d+\s
+{% block failregex %}^\s[+-]\d{4} \S+ \d{3}0[1-9] \S+ <HOST>:\d+ [\d.]+:\d+ \d+ \d+ \d+\s{% endblock failregex %}
 
-ignoreregex =
-
+{% block notes %}
 # DEV Notes:
 # http://www.3proxy.ru/howtoe.asp#ERRORS indicates that 01-09 are
 # all authentication problems (%E field)
@@ -18,3 +13,4 @@ ignoreregex =
 #
 # Requested by ykimon in https://github.com/fail2ban/fail2ban/issues/246
 # Author: Daniel Black
+{% endblock notes %}
