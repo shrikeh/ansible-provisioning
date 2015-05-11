@@ -137,7 +137,6 @@ function provision_box() {
   # Make sure we have virtualenv
     _get_virtualenv;
 
-
   # Start it
   _start_venv "${ANSIBLE_VENV}";
 
