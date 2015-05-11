@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 function _echo() {
   echo -e "\033[1m\n${1}\n\033[0m";
   tput sgr0;
@@ -160,4 +159,4 @@ function provision_box() {
   deactivate;
 }
 
-provision_box ${@}
+provision_box "${@}"
