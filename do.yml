@@ -5,11 +5,11 @@
   roles:
   - { role: digital-ocean }
   tasks:
-    - name: Add new host to our inventory.
-      add_host: >
-        name="{{ inventory_hostname }}"
-        ansible_ssh_host="{{ do.droplet.ip_address }}"
-        hostname="{{ inventory_hostname }}"
-        groups=provision
-      when: do.droplet is defined
+    - name:               Add new host to our inventory.
+      add_host:
+        name:             "{{ inventory_hostname }}"
+        hostname:         "{{ inventory_hostname }}"
+        groups:           "provision"
+      when:               do.droplet is defined
+      with_items:         "{{ groups['digital-ocean'] }}"
 ...

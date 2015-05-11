@@ -1,0 +1,10 @@
+---
+- name:               register droplet
+  add_host:
+    name:             "{{ inventory_hostname }}"
+    ansible_ssh_host: "{{ do.droplet.ip_address }}"
+    hostname:         "{{ inventory_hostname }}"
+    groups:           "provision"
+  when:               do.droplet is defined
+
+...

@@ -1,7 +1,6 @@
 ---
 - name: Create new Droplet.
-  local_action:
-    module: digital_ocean
+  digital_ocean:
     state: present
     command: droplet
     name: "{{ inventory_hostname | mandatory }}"
@@ -14,6 +13,10 @@
     region_id: "{{ digital_ocean_region_id | mandatory }}"
     ssh_key_ids: "{{ digital_ocean_ssh_key_ids | mandatory }}"
     unique_name: "{{ digital_ocean_unique_name | default('yes') }}"
+  delegate_to: 127.0.0.1
   register: do
+
+- name: set the IP to connect.
+  set_fact: ansible_ssh_host={{ do.droplet.ip_address }}
 
 ...

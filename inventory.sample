@@ -1,13 +1,15 @@
 [digital-ocean]
 # Group for dynamically provisioned DO hosts
 #
+test-fail2ban
 toran-proxy
-fail2ban-test
+toran-proxy2
 
 
 [pipeline]
-46.101.48.107
-46.101.63.196
+toran-proxy
+toran-proxy2
+test-fail2ban
 
 [production]
 
