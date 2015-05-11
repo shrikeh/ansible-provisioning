@@ -1,0 +1,14 @@
+[digital-ocean]
+# Group for dynamically provisioned DO hosts
+#
+toran-proxy
+fail2ban-test
+
+
+[pipeline]
+46.101.48.107
+46.101.63.196
+
+[production]
+
+[qualysguard]

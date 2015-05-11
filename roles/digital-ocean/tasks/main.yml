@@ -5,14 +5,15 @@
     state: present
     command: droplet
     name: "{{ inventory_hostname | mandatory }}"
-    private_networking: yes
+    backups_enabled: "{{ digital_ocean_backups_enabled | default('yes') }}"
+    private_networking: "{{ digital_ocean_private_networking | default('yes') }}"
     client_id: "{{ digital_ocean_v1_client_id | mandatory }}"
     api_key: "{{ digital_ocean_v1_api_key | mandatory }}"
     size_id: "{{ digital_ocean_size_id | mandatory }}"
     image_id: "{{ digital_ocean_image_id | mandatory }}"
     region_id: "{{ digital_ocean_region_id | mandatory }}"
     ssh_key_ids: "{{ digital_ocean_ssh_key_ids | mandatory }}"
-    unique_name: yes
+    unique_name: "{{ digital_ocean_unique_name | default('yes') }}"
   register: do
 
 ...

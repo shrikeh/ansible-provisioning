@@ -72,7 +72,7 @@ function provision_box() {
   local ANSIBLE_ROLES_PATH='./galaxy'
   local REMOTE_USER='root';
   local REQUIREMENTS_PIP_FILE='./requirements.pip.txt';
-  local INVENTORY_FILE='./inventory';
+  local INVENTORY_FILE='./inventory.sample';
   local PLAYBOOK_PATH='./provision.yml';
   local ANSIBLE_VENV='ansible-provision';
 
