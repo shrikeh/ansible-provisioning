@@ -48,7 +48,7 @@
     dest="/etc/rsyslog.conf"
 
 - name: Restart rsyslog
-  service: >
-    name='rsyslog'
-    state='restarted'
+  service:
+    name:  'rsyslog'
+    state: 'restarted'
 ...

@@ -7,9 +7,7 @@
   tasks:
     - name:               Add new host to our inventory.
       add_host:
-        name:             "{{ inventory_hostname }}"
-        hostname:         "{{ inventory_hostname }}"
+        name:             "{{ item }}"
         groups:           "provision"
-      when:               do.droplet is defined
       with_items:         "{{ groups['digital-ocean'] }}"
 ...

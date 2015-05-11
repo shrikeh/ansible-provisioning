@@ -1,4 +1,16 @@
 ---
+- hosts: all
+  gather_facts: false
+  tasks:
+  - name: Create hosting provider groups
+    group_by:
+      key: "{{ hosting_provider }}"
+    when: hosting_provider is defined
+  - name: Create pipeline/production groups
+    group_by:
+      key: "{{ server_environment }}"
+    when: server_environment is defined
+
 
 - include: do.yml
 - include: rax.yml
