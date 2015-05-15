@@ -1,26 +1,45 @@
 ---
 - name: Upload a public key for use on Rackspace
   local_action:
-    module:     rax_keypair
-    api_key:    "bbb3943746f0d83ec9102333c4a9c716"
-    public_key: "{{ ssh_provisioning_public_key }}"
-    username:   "leftfielddigital"
-    name:       "{{ ssh_provisioning_public_key_name }}"
-    region:      "{{ rackspace_cloud_region | default('DFW') }}"
-    state:      present
+    module:         rax_keypair
+    auth_endpoint:  "{{ rackspace_cloud_auth_endpoint }}"
+    identity_type:  "{{ rackspace_cloud_identity_type }}"
+    name:           "{{ rackspace_cloud_ssh_key_name }}"
+    public_key:     "{{ rackspace_cloud_ssh_public_key | mandatory }}"
+    region:         "{{ rackspace_cloud_region_id }}"
+    state:          present
+    verify_ssl:     yes
 
 
 - name: Create a new Rax cloud box
   local_action:
-    module:      rax
-    api_key:     "bbb3943746f0d83ec9102333c4a9c716"
-    username:    "leftfielddigital"
-    key_name:    "{{ ssh_provisioning_public_key_name }}"
-    flavor:      "5"
-    image:       "4f465d85-4512-44a9-9301-0412f0928f8b"
-    name:        "{{ inventory_hostname }}"
-    region:      "{{ rackspace_cloud_region | default('DFW') }}"
-    state:       present
-    tenant_id:   "425037"
-    wait:        yes
+    module:         rax
+    auth_endpoint:  "{{ rackspace_cloud_auth_endpoint }}"
+    auto_increment: "{{ rackspace_cloud_autoincrement }}"
+    count:          "{{ rackspace_cloud_count }}"
+    count_offset:   "{{ rackspace_cloud_count_offset }}"
+    disk_config:    "{{ rackspace_cloud_disk_config }}"
+    flavor:         "{{ rackspace_cloud_flavor_id | mandatory }}"
+    identity_type:  "{{ rackspace_cloud_identity_type }}"
+    image:          "{{ rackspace_cloud_image_id | mandatory }}"
+    key_name:       "{{ rackspace_cloud_ssh_key_name }}"
+    name:           "{{ inventory_hostname }}"
+    region:         "{{ rackspace_cloud_region_id }}"
+    state:          present
+    verify_ssl:     yes
+    wait:           yes
+  register:         rax
+
+- name: Get the rax facts for the server
+  local_action:
+    module:         rax_facts
+    auth_endpoint:  "{{ rackspace_cloud_auth_endpoint }}"
+    identity_type:  "{{ rackspace_cloud_identity_type }}"
+    name:           "{{ inventory_hostname }}"
+    region:         "{{ rackspace_cloud_region_id }}"
+    verify_ssl:     yes
+
+- name: Map some facts
+  set_fact:
+    ansible_ssh_host: "{{ rax_accessipv4 }}"
 ...

@@ -2,29 +2,13 @@
 - hosts: rackspace-cloud
   connection: local
   gather_facts: false
-  vars:
-    client_id: 'inviqa'
-    ssh_provisioning_public_key_name: 'Inviqa Deploy'
   roles:
     - { role: rackspace-cloud }
   tasks:
-    - name: Register the box
-      local_action:
-        module:      rax_facts
-        api_key:     "bbb3943746f0d83ec9102333c4a9c716"
-        username:    "leftfielddigital"
-        name:        "{{ inventory_hostname }}"
-        region:      "{{ rackspace_cloud_region | default('DFW') }}"
-        tenant_id:   "425037"
-        group:       "{{ client_id }}"
-      register:      rax
-
     - name: Add new host to our inventory.
-      add_host: >
-        name="{{ inventory_hostname }}"
-        ansible_ssh_host="{{ item.rax_accessipv4 }}"
-        hostname="{{ inventory_hostname }}"
-        groups=provision
-      with_items: rax
+      add_host:
+        name:             "{{ item }}"
+        groups:           "provision"
+      with_items:         "{{ groups['rackspace-cloud'] }}"
 
 ...

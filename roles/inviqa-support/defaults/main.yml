@@ -1,0 +1,13 @@
+---
+
+inviqa_support_users:
+  - name: inviqa-support
+    group: "{{ inviqa_support_groups.inviqa_support }}"
+    authorized:
+      - files/support_rsa.pub
+
+  - name: inviqa-ooh-support
+    group: "{{ inviqa_support_groups.inviqa_ooh_support }}"
+    authorized:
+      - files/support_rsa.pub
+...

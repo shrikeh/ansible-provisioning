@@ -1,0 +1,4 @@
+---
+rackspace_cloud_image_id: "{{ rackspace_magento_pipeline.image }}"
+rackspace_cloud_flavor_id: "{{ rackspace_magento_pipeline.flavor.id }}"
+...

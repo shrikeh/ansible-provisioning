@@ -54,6 +54,8 @@ docs/_build/
 # PyBuilder
 target/
 
+# Standard (default) inventory file
+inventory
 
 # Downloaded galaxy roles
 galaxy/

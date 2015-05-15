@@ -1,9 +1,9 @@
 ---
 sudo_group_gids:
-  inviqasupport:    '2000'
-  inviqaoohsupport: '2001'
-  qualysguard:      '2002'
-  admin:            '2011'
-  deploy:           '2012'
-  provision:        '2013'
+  inviqasupport:    "{{ inviqa_group_ids.inviqa_support | mandatory }}"
+  inviqaoohsupport: "{{ inviqa_group_ids.inviqa_ooh_support | mandatory }}"
+  qualysguard:      "{{ inviqa_group_ids.qualysguard | mandatory }}"
+  admin:            "{{ inviqa_group_ids.production_admin | mandatory }}"
+  deploy:           "{{ inviqa_group_ids.production_deploy | mandatory }}"
+  provision:        "{{ inviqa_group_ids.production_provision | mandatory }}"
 ...

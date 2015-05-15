@@ -6,5 +6,4 @@ do_unique_name:             yes
 do_backups_enabled:         yes
 do_private_networking:      yes
 do_ssh_key_ids:             792580
-
 ...

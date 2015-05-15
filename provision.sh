@@ -57,6 +57,9 @@ function _run_playbook() {
 
   ( export ANSIBLE_ROLES_PATH=${1}; \
     export ANSIBLE_HOST_KEY_CHECKING='no'; \
+    export RAX_USERNAME='leftfielddigital'; \
+    export RAX_API_KEY='bbb3943746f0d83ec9102333c4a9c716'; \
+    export RAX_REGION='DFW'; \
     ansible-playbook -i "${INVENTORY_FILE}" \
       -vvvv \
       --user="${REMOTE_USER}" \
@@ -71,7 +74,7 @@ function provision_box() {
   local ANSIBLE_ROLES_PATH='./galaxy'
   local REMOTE_USER='root';
   local REQUIREMENTS_PIP_FILE='./requirements.pip.txt';
-  local INVENTORY_FILE='./inventory.sample';
+  local INVENTORY_FILE='./inventory';
   local PLAYBOOK_PATH='./provision.yml';
   local ANSIBLE_VENV='ansible-provision';
 
