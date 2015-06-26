@@ -21,10 +21,10 @@ function _get_ansible_galaxy_roles() {
 
   _echo 'Installing ansible roles from Galaxy';
   mkdir -p "${GALAXY_ROLES_PATH}";
-  ./venv/bin/ansible-galaxy install \
+  ansible-galaxy install \
     -r "${GALAXY_ROLES_FILE}" \
     -p "${GALAXY_ROLES_PATH}" \
-    --force \
+    --ignore-errors \
   ;
 }
 
@@ -44,7 +44,7 @@ function _run_playbook() {
     export RAX_USERNAME='leftfielddigital'; \
     export RAX_API_KEY='bbb3943746f0d83ec9102333c4a9c716'; \
     export RAX_REGION='DFW'; \
-    ./venv/bin/ansible-playbook -i "${INVENTORY_FILE}" \
+    ansible-playbook -i "${INVENTORY_FILE}" \
       -vvvv \
       --user="${REMOTE_USER}" \
       --vault-password-file  "${VAULT_PASSWORD_FILE}"\
@@ -104,6 +104,10 @@ function provision_box() {
       shift
       ;;
       -v|--vaultpassword)
+        ANSIBLE_VAULT_PASSWORD="${2}";
+      shift
+      ;;
+      --vfile)
         ANSIBLE_VAULT_PASSWORD_FILE="${2}";
       shift
       ;;
@@ -122,6 +126,28 @@ function provision_box() {
     shift
   done
 
+  # Test files needed exist
+
+  if [ ! -e "${INVENTORY_FILE}" ]; then
+    _echo "Could not find inventory file ${INVENTORY_FILE}. Please specify a path using -i or --inventory followed by the path";
+    return 1
+  fi
+
+  if [ ! -e "${PLAYBOOK_PATH}" ]; then
+    _echo "Could not find playbook to run at ${PLAYBOOK_PATH}. Please specify a path using -p or --playbook followed by the path";
+    return 1
+  fi
+
+  if [ ! -e "${ANSIBLE_VAULT_PASSWORD_FILE}" ]; then
+    if [ -z "${ANSIBLE_VAULT_PASSWORD}" ]; then
+      _echo "No vault password file exists at and you did not supply a vault password".
+      read -p 'Please enter the vault file password' ANSIBLE_VAULT_PASSWORD
+    fi
+    _echo "Creating vault password file at ${ANSIBLE_VAULT_PASSWORD_FILE}";
+    echo "${ANSIBLE_VAULT_PASSWORD}" > "${ANSIBLE_VAULT_PASSWORD_FILE}";
+
+  fi
+
   # Make sure we have virtualenv
   _echo 'Updating pip';
   pip install --upgrade pip;
@@ -132,7 +158,7 @@ function provision_box() {
   # Start and run the virtualenv
 
     echo "Creating virtualenv ${ANSIBLE_VENV}";
-    /usr/local/bin/virtualenv --clear ${ANSIBLE_VENV};
+    /usr/local/bin/virtualenv ${ANSIBLE_VENV};
     source ./${ANSIBLE_VENV}/bin/activate
 
 

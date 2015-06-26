@@ -1,12 +1,2 @@
-[digital-ocean]
-# Group for dynamically provisioned DO hosts
-#
-toran-proxy
-
-
-[pipeline]
-toran-proxy
-
-[production]
-
-[qualysguard]
+[example-client]
+some-server hosting_provider=digital-ocean hostname_name=nginx-test server-density=yes server_environment=productio
