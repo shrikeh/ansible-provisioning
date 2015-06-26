@@ -3,7 +3,7 @@
   digital_ocean:
     state: present
     command: droplet
-    name: "{{ inventory_hostname | mandatory }}"
+    name: "{{ digital_ocean_name | mandatory }}"
     backups_enabled: "{{ digital_ocean_backups_enabled | default('yes') }}"
     private_networking: "{{ digital_ocean_private_networking | default('yes') }}"
     client_id: "{{ digital_ocean_v1_client_id | mandatory }}"
@@ -17,6 +17,8 @@
   register: do
 
 - name: set the IP to connect.
-  set_fact: ansible_ssh_host={{ do.droplet.ip_address }}
+  set_fact:
+    ansible_ssh_host: "{{ do.droplet.ip_address }}"
+    host_provisioned: true
 
 ...

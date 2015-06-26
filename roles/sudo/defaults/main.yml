@@ -1,4 +1,6 @@
 ---
+sudo_sudoers_dir_mode: '0750'
+
 sudo_groups:
   - gid: "{{ sudo_group_gids.inviqasupport | mandatory }}"
     filename: inviqa-support

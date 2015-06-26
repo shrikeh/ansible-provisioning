@@ -1,11 +1,14 @@
 ---
-- src:     https://github.com/shrikeh/ansible-sudo.git
-  name:    role_sudo
-
+- src:      https://github.com/shrikeh/ansible-role-serverdensity
+  name:     jurgenhaas.ServerDensity
+- src:      shrikeh.facl
 - src:      goozbach.EPEL
 - src:      bennojoy.ntp
 - src:      opsmatic.opsmatic
 - src:      avelis.dome9
 - src:      debops.rsyslog
 - src:      resmo.fail2ban
+- src:      https://github.com/shrikeh/ansible-sudo.git
+  name:     role_sudo
+# - src:      jurgenhaas.ServerDensity
 ...

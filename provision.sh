@@ -5,22 +5,11 @@ function _echo() {
   tput sgr0;
 }
 
-# Get the prereqs for setting up a virtualenv
-function _get_virtualenv() {
-  _echo 'Updating pip';
-  pip install --upgrade pip;
+function _get_ansible_plugins() {
+  local ANSIBLE_ACTION_PLUGINS_DIR=${1};
 
-  _echo 'Installing virtualenv';
-  pip install --upgrade virtualenv virtualenvwrapper;
-}
-
-# Start and run the virtualenv
-function _start_venv() {
-  local VENV=${1};
-
-  echo "Creating virtualenv ${VENV}";
-  mkvirtualenv "${VENV}";
-  workon "${VENV}";
+  mkdir -p ${ANSIBLE_ACTION_PLUGINS_DIR};
+  git clone https://github.com/jurgenhaas/ansible-plugin-serverdensity.git "${ANSIBLE_ACTION_PLUGINS_DIR}/server-density";
 }
 
 # Read through the roles file and put roles in
@@ -32,35 +21,30 @@ function _get_ansible_galaxy_roles() {
 
   _echo 'Installing ansible roles from Galaxy';
   mkdir -p "${GALAXY_ROLES_PATH}";
-  ansible-galaxy install \
+  ./venv/bin/ansible-galaxy install \
     -r "${GALAXY_ROLES_FILE}" \
     -p "${GALAXY_ROLES_PATH}" \
     --force \
   ;
 }
 
-function _get_pip_requirements() {
-  local REQUIREMENTS_FILE=${1};
-  _echo 'Installing module requirements via pip';
-  pip install -r "${REQUIREMENTS_FILE}";
-}
-
 # Runs the playbook itself
 
 function _run_playbook() {
-  local INVENTORY_FILE="${2}";
-  local PLAYBOOK_PATH="${3}";
-  local PROVISION_HOSTNAME="${4}";
-  local VAULT_PASSWORD_FILE="${5}";
+  local INVENTORY_FILE="${3}";
+  local PLAYBOOK_PATH="${4}";
+  local PROVISION_HOSTNAME="${5}";
+  local VAULT_PASSWORD_FILE="${6}";
 
   _echo "Running playbook ${PLAYBOOK_PATH}";
 
   ( export ANSIBLE_ROLES_PATH=${1}; \
+    export ANSIBLE_ACTION_PLUGINS=${2}; \
     export ANSIBLE_HOST_KEY_CHECKING='no'; \
     export RAX_USERNAME='leftfielddigital'; \
     export RAX_API_KEY='bbb3943746f0d83ec9102333c4a9c716'; \
     export RAX_REGION='DFW'; \
-    ansible-playbook -i "${INVENTORY_FILE}" \
+    ./venv/bin/ansible-playbook -i "${INVENTORY_FILE}" \
       -vvvv \
       --user="${REMOTE_USER}" \
       --vault-password-file  "${VAULT_PASSWORD_FILE}"\
@@ -72,11 +56,12 @@ function provision_box() {
 
   local ANSIBLE_ROLES_FILE='requirements.yml';
   local ANSIBLE_ROLES_PATH='./galaxy'
+  local ANSIBLE_ACTION_PLUGINS_PATH='./plugins/action_plugins';
   local REMOTE_USER='root';
   local REQUIREMENTS_PIP_FILE='./requirements.pip.txt';
   local INVENTORY_FILE='./inventory';
   local PLAYBOOK_PATH='./provision.yml';
-  local ANSIBLE_VENV='ansible-provision';
+  local ANSIBLE_VENV='venv';
 
   local ANSIBLE_VAULT_PASSWORD_FILE=~/.provision_vault_password
   local SKIP_VENV=false;
@@ -138,19 +123,31 @@ function provision_box() {
   done
 
   # Make sure we have virtualenv
-    _get_virtualenv;
+  _echo 'Updating pip';
+  pip install --upgrade pip;
 
-  # Start it
-  _start_venv "${ANSIBLE_VENV}";
+  _echo 'Installing virtualenv';
+  pip install --upgrade virtualenv virtualenvwrapper;
+
+  # Start and run the virtualenv
+
+    echo "Creating virtualenv ${ANSIBLE_VENV}";
+    /usr/local/bin/virtualenv --clear ${ANSIBLE_VENV};
+    source ./${ANSIBLE_VENV}/bin/activate
+
 
   # Install all the virtualenv requirements
-  _get_pip_requirements "${REQUIREMENTS_PIP_FILE}";
+  _echo "Installing module requirements via pip from ${REQUIREMENTS_PIP_FILE}";
+  pip install -r "${REQUIREMENTS_PIP_FILE}";
+
+  _get_ansible_plugins "${ANSIBLE_ACTION_PLUGINS_PATH}";
 
   # Get the galaxy roles and install them
   _get_ansible_galaxy_roles "${ANSIBLE_ROLES_FILE}" "${ANSIBLE_ROLES_PATH}";
 
   _run_playbook \
     "${ANSIBLE_ROLES_PATH}" \
+    "${ANSIBLE_ACTION_PLUGINS_PATH}" \
     "${INVENTORY_FILE}" \
     "${PLAYBOOK_PATH}" \
     "${PROVISION_HOSTNAME}" \

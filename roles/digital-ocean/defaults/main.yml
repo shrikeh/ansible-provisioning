@@ -1,8 +1,10 @@
 ---
+
 digital_ocean_v1_client_id:       "{{ enc_do_v1_client_id }}"
 digital_ocean_v1_api_key:         "{{ enc_do_v1_api_key }}"
 digital_ocean_size_id:            "{{ do_size_id | default('63') }}"
 digital_ocean_image_id:           "{{ do_image_id | default('9801950') }}"
+digital_ocean_name:               "{{ inventory_hostname }}"
 digital_ocean_region_id:          "{{ do_region_id | default('7') }}"
 digital_ocean_unique_name:        "{{ do_unique_name | default('yes') }}"
 digital_ocean_backups_enabled:    "{{ do_backups_enabled | default('yes') }}"

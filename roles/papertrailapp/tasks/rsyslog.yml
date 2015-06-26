@@ -49,7 +49,9 @@
 
 - name: Restart rsyslog
   service:
-    name:   'rsyslog'
-    state:  'restarted'
-    enabled: yes
+    name:     'rsyslog'
+    state:    'restarted'
+    sleep:    5
+    enabled:  yes
+  ignore_errors: True
 ...

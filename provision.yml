@@ -2,14 +2,34 @@
 - hosts: all
   gather_facts: false
   tasks:
+  - name: Set up localhost group so we can use it to exclude later
+    add_host:
+      hostname: localhost
+      ansible_python_interpreter: "python"
+      ansible_ssh_host: 127.0.0.1
+      ansible_connection: local
+      groups: localhost
+
+- hosts: all:!localhost
+  gather_facts: false
+  tasks:
+  - name: Add all servers that aren't localhost to provision group
+    group_by:
+      key: 'provision'
   - name: Create hosting provider groups
     group_by:
       key: "{{ hosting_provider }}"
     when: hosting_provider is defined
+
   - name: Create pipeline/production groups
     group_by:
       key: "{{ server_environment }}"
     when: server_environment is defined
+
+  - name: Split into hosts for those that should have server density
+    group_by:
+      key: 'server-density'
+      when: server_density is defined and server_density = 'yes'
 
 
 - include: do.yml
@@ -23,14 +43,19 @@
     local_action: >
       wait_for
       port=22
-      host="{{ ansible_ssh_host }}"
+      host="{{ ansible_ssh_host | default(inventory_hostname) }}"
       timeout=300
       delay=30
+    when: host_provisioned is defined
 
 - hosts: provision
   roles:
   - { role: security }
   - { role: monitoring }
+
+- hosts: server-density
+  roles:
+  - { role: server-density }
 
 - hosts: qualysguard
   connection: local

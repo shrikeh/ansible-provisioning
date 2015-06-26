@@ -13,12 +13,13 @@ inviqa_group_ids:
 
 inviqa_support_groups:
   inviqa_support:
-    id: "{{ inviqa_group_ids.inviqa_support }}"
+    gid: "{{ inviqa_group_ids.inviqa_support }}"
     name: inviqasupport
   inviqa_ooh_support:
-    id: "{{ inviqa_group_ids.inviqa_ooh_support }}"
+    gid: "{{ inviqa_group_ids.inviqa_ooh_support }}"
     name: inviqaoohsupport
   qualysguard:
-    id: "{{ inviqa_group_ids.qualysguard }}"
+    gid: "{{ inviqa_group_ids.qualysguard }}"
+    name: qualysguard
 
 ...

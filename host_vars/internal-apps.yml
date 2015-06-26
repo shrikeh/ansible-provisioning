@@ -1,9 +1,8 @@
 ---
-do_size_id:                 66
-do_image_id:                9801950
+do_size_id:                 63
+do_image_id:                11836690
 do_region_id:               7
 do_unique_name:             yes
 do_backups_enabled:         yes
 do_private_networking:      yes
-do_ssh_key_ids:             792580
 ...

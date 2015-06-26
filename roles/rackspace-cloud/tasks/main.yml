@@ -42,4 +42,5 @@
 - name: Map some facts
   set_fact:
     ansible_ssh_host: "{{ rax_accessipv4 }}"
+    host_provisioned: true
 ...
