@@ -1,0 +1,31 @@
+---
+
+- name: Add all servers that aren't localhost to provision group
+  group_by:
+    key: 'provision'
+- name: Create hosting provider groups
+  group_by:
+    key: "{{ provider | replace(' ', '-') | lower }}"
+  when: provider is defined
+
+- name: Create pipeline/production groups
+  group_by:
+    key: "{{ server_environment }}"
+  when: server_environment is defined
+
+- name: Split into hosts for those that should have ServerDensity
+  group_by:
+    key: 'server-density'
+    when: server_density is defined and server_density
+
+- name: Split into hosts for those that should be on CloudFlare
+  group_by:
+    key: 'cloudflare'
+    when: cloudflare is defined and cloudflare
+
+- name: Split into hosts for those that should have dome9
+  group_by:
+    key: 'dome9'
+    when: dome9 is defined and dome9
+
+...

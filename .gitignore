@@ -57,6 +57,9 @@ target/
 # Standard (default) inventory file
 inventory
 
+.*
+!.git*
+
 # Downloaded galaxy roles
-galaxy/
-plugins/
+ansible/galaxy/
+ansible/plugins/

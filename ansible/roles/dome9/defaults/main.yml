@@ -1,0 +1,3 @@
+---
+dome9_pairkey: "{{ enc_dome9_pairing_key }}"
+...

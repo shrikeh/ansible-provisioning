@@ -1,0 +1,60 @@
+---
+- hosts: all
+  gather_facts: false
+  tasks:
+  - name: Set up localhost group so we can use it to exclude later
+    add_host:
+      hostname: localhost
+      ansible_python_interpreter: "python"
+      ansible_ssh_host: 127.0.0.1
+      ansible_connection: local
+      groups: localhost
+
+- hosts: all:!localhost
+  gather_facts: false
+  roles:
+    - { role: provisioning }
+
+- include: do.yml
+- include: rax.yml
+- include: aws.yml
+
+- hosts: provision
+  remote_user: root
+  gather_facts: false
+  tasks:
+  - name: Wait for port 22 to become available.
+    local_action: >
+      wait_for
+      port=22
+      host="{{ ansible_ssh_host | default(inventory_hostname) }}"
+      timeout=300
+      delay=30
+    when: host_provisioned is defined
+
+- hosts: provision
+  roles:
+  - { role: security }
+  - { role: monitoring }
+
+- hosts: server-density
+  roles:
+  - { role: server-density }
+
+- hosts: qualysguard
+  connection: local
+  gather_facts: false
+  roles:
+  - { role: qualysguard }
+
+- hosts: dome9
+  roles:
+    - { role: dome9 }
+
+- hosts: qualysguard
+  connection: local
+  gather_facts: false
+  roles:
+    - { role: cloudflare }
+
+...

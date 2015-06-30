@@ -1,0 +1,9 @@
+---
+sudo_group_gids:
+  inviqasupport:    "{{ inviqa_group_ids.inviqa_support | mandatory }}"
+  inviqaoohsupport: "{{ inviqa_group_ids.inviqa_ooh_support | mandatory }}"
+  qualysguard:      "{{ inviqa_group_ids.qualysguard | mandatory }}"
+  admin:            "{{ inviqa_group_ids.production_admin | mandatory }}"
+  deploy:           "{{ inviqa_group_ids.production_deploy | mandatory }}"
+  provision:        "{{ inviqa_group_ids.production_provision | mandatory }}"
+...

@@ -1,0 +1,13 @@
+---
+client: 'Acme'
+group: 'Session Digital'
+environment: 'production'
+role: 'web'
+
+provider: 'Digital Ocean'
+
+server_hostname: 'wibble'
+server_fqdns:
+  - 'wibble.sessiondigital.com'
+server_name: 'The Wibble server'
+...

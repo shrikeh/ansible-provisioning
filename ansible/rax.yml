@@ -1,0 +1,14 @@
+---
+- hosts: rackspace-cloud
+  connection: local
+  gather_facts: false
+  roles:
+    - { role: rackspace-cloud }
+  tasks:
+    - name: Add new host to our inventory.
+      add_host:
+        name:             "{{ item }}"
+        groups:           "provision"
+      with_items:         "{{ groups['rackspace-cloud'] }}"
+
+...

@@ -1,0 +1,14 @@
+---
+qualysguard:        yes
+server-density:     yes
+server_environment: production
+sd_group: 'Internal Services'
+location:
+  countryCode:  'gb'
+  countryName:  'United Kingdom'
+  text:         'London'
+provider: Digital Ocean
+
+dome9_secgroups:
+  - 'Inviqa'
+...

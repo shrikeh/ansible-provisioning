@@ -1,0 +1,5 @@
+---
+- hosts: aws
+  gather_facts: false
+  connection: local
+...

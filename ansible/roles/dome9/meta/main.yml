@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: avelis.dome9, when: ansible_pkg_mgr == 'apt' }
+...

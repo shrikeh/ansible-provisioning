@@ -1,0 +1,9 @@
+---
+- name: Find out which type of config is present for logging
+  shell: "ls -d /etc/*syslog*"
+  register: papertrailapp_logger
+
+- include: rsyslog.yml
+  when: papertrailapp_logger.stdout.find('/etc/ryslog.conf')
+
+...

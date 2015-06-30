@@ -1,0 +1,6 @@
+---    
+- name: Name the server
+  set_fact:
+    hostname: "{{ name | regex_replace('\\W', '-') | lower }}"
+  when: hostname is not defined
+...

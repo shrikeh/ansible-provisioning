@@ -1,0 +1,7 @@
+## {{ ansible_managed }}
+## {{ item.filename }}
+{% if item.no_requiretty | default(false) %}
+Defaults:%#{{ item.gid | mandatory }} !requiretty
+{% endif %}
+
+%#{{ item.gid | mandatory }}    {{ item.permissions }}

@@ -1,0 +1,12 @@
+---
+name:             'Example server'
+client:           'Acme'
+business_unit:    'Session Digital'
+cloudflare:       yes
+dome9:            yes
+server_density:   yes
+qualysguard:      yes
+environment:      production
+provider:         'Digital Ocean'
+
+...

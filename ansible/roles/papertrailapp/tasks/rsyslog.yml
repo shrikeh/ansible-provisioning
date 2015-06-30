@@ -1,0 +1,70 @@
+---
+
+- name: Ensure rsyslogd folder exists
+  file:
+    path:   "{{ papertrail_app_rsyslogd_path }}"
+    state:  directory
+    owner:  root
+    group:  root
+    mode:   0751
+
+- name: Install rsyslog-gnutls on Ubuntu
+  apt:
+    name:   rsyslog-gnutls
+    state:  latest
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Install rsyslog-gnutls on CentOS/RH
+  yum:
+    name:   rsyslog-gnutls
+    state:  latest
+  when: ansible_pkg_mgr == 'yum'
+
+- name: Check if we already have the CA bundle
+  stat:
+    path:     "{{ papertrail_app_ca_path }}"
+  register: papertrail_ca
+
+- name: Download papertrailapp CA bundle
+  get_url:
+    url: "{{ papertrail_app_ca_bundle }}"
+    dest: "{{ papertrail_app_ca_path }}"
+    mode: 0644
+  when: not papertrail_ca.stat.exists
+
+- name: Get the MD5
+  stat:
+    path:     "{{ papertrail_app_ca_path }}"
+    get_md5:  true
+  register: papertrail_ca
+
+- name: Fail if the checksum doesn't match
+  fail:
+    msg: "Checksum of {{ papertrail_app_ca_path }} fails to match {{ papertrail_app_ca_checksum }}"
+  when: papertrail_ca.stat.md5 != "{{ papertrail_app_ca_checksum }}"
+
+- name: Add papertrailapp to rsyslog
+  template:
+    src:    'rsyslog.j2'
+    dest:   "{{ papertrail_app_rsyslogd_path }}/papertrail"
+    owner:  'root'
+    group:  'root'
+    mode:   0644
+
+- name: Add papertrailapp to rsyslog
+  lineinfile:
+    line:         "$IncludeConfig {{ papertrail_app_rsyslogd_path }}/papertrail"
+    state:        present
+    insertafter:  EOF
+    dest:         '/etc/rsyslog.conf'
+  register: papertrailapp_rsyslog
+
+- name: Restart rsyslog
+  service:
+    name:     'rsyslog'
+    state:    'restarted'
+    sleep:    5
+    enabled:  yes
+  ignore_errors: True
+  when: papertrailapp_rsyslog.changed
+...

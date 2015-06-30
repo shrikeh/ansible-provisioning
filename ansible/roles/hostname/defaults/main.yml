@@ -1,0 +1,10 @@
+---
+hostname_name: "{{ hostname }}"
+hostname_kernelname: "{{ hostname_name | mandatory }}"
+hostname_fqdn:
+hosts_default_ipv4_hosts:
+  address: "{{ ansible_default_ipv4.address }}"
+  hostnames:
+    - "{{ hostname }}"
+    - "{{ hostname_fqdn }}"
+...

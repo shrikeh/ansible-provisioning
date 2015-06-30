@@ -1,0 +1,12 @@
+---
+  
+- name: Add the groups to sudoers.d
+  template: >
+    src='sudo-group.j2'
+    dest="/etc/sudoers.d/{{ item.filename }}"
+    owner='root'
+    group='root'
+    mode='0640'
+    validate='visudo -cf %s'
+  with_items: sudo_groups
+...
