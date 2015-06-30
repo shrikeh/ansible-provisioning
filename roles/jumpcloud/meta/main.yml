@@ -1,7 +1,0 @@
----
-dependencies:
-  - { role: hostname }
-  - { role: ntp }
-  - { role: curl }
-  - { role: sudo }
-...

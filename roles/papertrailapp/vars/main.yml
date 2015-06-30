@@ -1,3 +1,0 @@
----
-papertrailapp_port: "{{ enc_papertrailapp_port }}"
-...

@@ -1,7 +1,0 @@
----
-user_groups_environment:
-  - "{{ inviqa_support_groups.inviqa_support }}"
-  - "{{ inviqa_support_groups.inviqa_ooh_support }}"
-  - "{{ inviqa_support_groups.qualysguard }}"
-
-...

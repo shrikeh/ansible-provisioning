@@ -1,7 +1,0 @@
----
-dependencies:
-  - { role: sudo }
-  - { role: facl }
-  - { role: jumpcloud }
-  - { role: fail2ban }
-...

@@ -1,4 +1,0 @@
----
-dependencies:
-  - { role: epel, when: ansible_pkg_mgr == 'yum' }
-...

@@ -1,9 +1,0 @@
----
-- name: Install screen on Debian-like systems
-  apt:
-    name: screen
-    state: latest
-    update_cache: true
-    cache_valid_time: 3600
-  tags: [configuration, screen, screen-install]
-...

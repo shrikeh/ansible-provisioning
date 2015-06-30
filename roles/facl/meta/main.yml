@@ -1,5 +1,0 @@
----
-dependencies:
-  - { role: groups }
-  - { role: shrikeh.facl }
-...

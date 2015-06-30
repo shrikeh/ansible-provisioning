@@ -1,3 +1,0 @@
----
-ansible_managed: "Managed by Inviqa: {file} modified on %Y-%m-%d %H:%M:%S by {uid} on {host}"
-...

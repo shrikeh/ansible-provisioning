@@ -1,5 +1,0 @@
----
-sd_api_token: "{{ enc_server_density_token }}"
-sd_agent_key: "{{ enc_server_density_key }}"
-sd_url:       'https://inviqa.serverdensity.io'
-...
