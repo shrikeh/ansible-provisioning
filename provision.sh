@@ -7,10 +7,11 @@ function _echo() {
 
 function _get_ansible_plugins() {
   local ANSIBLE_ACTION_PLUGINS_DIR=${1};
-
-  mkdir -p ${ANSIBLE_ACTION_PLUGINS_DIR};
-  git clone https://github.com/jurgenhaas/ansible-plugin-serverdensity.git "${ANSIBLE_ACTION_PLUGINS_DIR}/server-density";
-}
+  if [ ! -d "${ANSIBLE_ACTION_PLUGINS_DIR}" ]; then
+    mkdir -p ${ANSIBLE_ACTION_PLUGINS_DIR};
+    git clone https://github.com/jurgenhaas/ansible-plugin-serverdensity.git "${ANSIBLE_ACTION_PLUGINS_DIR}/server-density";
+  fi
+  }
 
 # Read through the roles file and put roles in
 # ${GALAXY_ROLES_PATH}
@@ -62,7 +63,7 @@ function provision_box() {
   local PLAYBOOK_PATH='./ansible/provision.yml';
   local ANSIBLE_VENV='venv';
 
-  local ANSIBLE_VAULT_PASSWORD_FILE=~/.provision_vault_password
+  local ANSIBLE_VAULT_PASSWORD_FILE=~/.provision_vault_password;
   local SKIP_VENV=false;
 
   local -a ARGV=("${!1}");

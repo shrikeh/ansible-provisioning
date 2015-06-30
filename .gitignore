@@ -1,3 +1,8 @@
+# Hidden files, except .gitignore etc
+.*
+!.git*
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -6,7 +11,6 @@ __pycache__/
 *.so
 
 # Distribution / packaging
-.Python
 venv/
 env/
 build/
@@ -57,8 +61,6 @@ target/
 # Standard (default) inventory file
 inventory
 
-.*
-!.git*
 
 # Downloaded galaxy roles
 ansible/galaxy/
