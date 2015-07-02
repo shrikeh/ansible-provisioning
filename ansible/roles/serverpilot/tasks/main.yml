@@ -1,0 +1,98 @@
+---
+- name: Register the server on ServerPilot
+  uri:
+    url: "{{ serverpilot_api_endpoint_servers }}"
+    HEADER_Content-Type: 'application/json'
+    body:
+      name:       "{{ serverpilot_server_name }}"
+    body_format:  json
+    force_basic_auth: yes
+    method: POST
+    user:     "{{ serverpilot_client_id }}"
+    password: "{{ serverpilot_api_key }}"
+    status_code: 200,409
+  delegate_to: localhost
+  tags: serverpilot
+
+- name: Get all the servers
+  uri:
+    url: "{{ serverpilot_api_endpoint_servers }}"
+    HEADER_Content-Type: 'application/json'
+    body_format:  json
+    force_basic_auth: yes
+    method: GET
+    user:     "{{ serverpilot_client_id }}"
+    password: "{{ serverpilot_api_key }}"
+  delegate_to: localhost
+  register: serverpilot_servers
+  run_once: yes
+  tags: serverpilot
+
+- name: Set the ServerPilot ID based on the response
+  set_fact:
+    serverpilot_server_id: "{{ item.id }}"
+  with_items: serverpilot_servers.json.data
+  when: item.name == serverpilot_server_name
+  tags: serverpilot
+
+- name: Create the system user
+  uri:
+    url: "{{ serverpilot_api_endpoint_sysusers }}"
+    HEADER_Content-Type: 'application/json'
+    body:
+      serverid:   "{{ serverpilot_server_id }}"
+      name:       "{{ serverpilot_system_user }}"
+    body_format:  json
+    force_basic_auth: yes
+    method: POST
+    user:     "{{ serverpilot_client_id }}"
+    password: "{{ serverpilot_api_key }}"
+    status_code: 200,409
+  delegate_to: localhost
+  tags: serverpilot
+
+- name: Fetch all system users
+  uri:
+    url: "{{ serverpilot_api_endpoint_sysusers }}"
+    HEADER_Content-Type: 'application/json'
+    body_format:  json
+    force_basic_auth: yes
+    method: GET
+    user:     "{{ serverpilot_client_id }}"
+    password: "{{ serverpilot_api_key }}"
+  delegate_to: localhost
+  register: serverpilot_system_users
+  run_once: yes
+  tags: serverpilot
+
+- debug:
+    var: serverpilot_system_users
+
+- name: Set the ServerPilot system user based on the response
+  set_fact:
+    serverpilot_system_user: "{{ item.id }}"
+  with_items: serverpilot_system_users.json.data
+  when: item.serverid == serverpilot_server_id
+  tags: serverpilot
+
+- debug:
+    var: serverpilot_system_user
+
+- name: Create the app
+  uri:
+    url: "{{ serverpilot_api_endpoint_apps }}"
+    HEADER_Content-Type: 'application/json'
+    body:
+      name: "{{ serverpilot_app_name }}"
+    body_format:  json
+    force_basic_auth: yes
+    method: POST
+    user:     "{{ serverpilot_client_id }}"
+    password: "{{ serverpilot_api_key }}"
+    status_code: 200,409
+  delegate_to: localhost
+  when: serverpilot_app_name is defined
+  tags: serverpilot
+
+
+...

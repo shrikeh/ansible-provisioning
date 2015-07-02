@@ -1,0 +1,7 @@
+---
+server_density: yes
+name: Inviqa HR Apps
+hostname: inviqa-prod-hr
+dome9: yes
+serverpilot: yes
+...

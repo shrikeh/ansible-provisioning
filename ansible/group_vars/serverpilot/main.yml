@@ -1,0 +1,4 @@
+---
+serverpilot_client_id: "{{ enc_serverpilot_client_id }}"
+serverpilot_api_key: "{{ enc_serverpilot_api_key }}"
+...

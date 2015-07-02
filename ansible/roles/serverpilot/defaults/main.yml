@@ -1,0 +1,7 @@
+---
+serverpilot_api_endpoint_servers: 'https://api.serverpilot.io/v1/servers'
+serverpilot_api_endpoint_apps: 'https://api.serverpilot.io/v1/apps'
+serverpilot_api_endpoint_sysusers: 'https://api.serverpilot.io/v1/sysusers'
+serverpilot_system_user: 'serverpilot'
+serverpilot_server_name: "{{ inventory_hostname }}"
+...

@@ -17,15 +17,24 @@
   group_by:
     key: 'server-density'
     when: server_density is defined and server_density
+  tags: serverdensity
 
 - name: Split into hosts for those that should be on CloudFlare
   group_by:
     key: 'cloudflare'
     when: cloudflare is defined and cloudflare
+  tags: cloudflare
+
+- name: Split into hosts for those that should be on ServerPilot
+  group_by:
+    key: 'serverpilot'
+    when: serverpilot is defined and serverpilot
+  tags: serverpilot
 
 - name: Split into hosts for those that should have dome9
   group_by:
     key: 'dome9'
     when: dome9 is defined and dome9
+  tags: dome9
 
 ...
