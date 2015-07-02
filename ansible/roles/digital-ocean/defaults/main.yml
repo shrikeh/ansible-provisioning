@@ -1,7 +1,5 @@
 ---
-
-digital_ocean_v1_client_id:       "{{ enc_do_v1_client_id }}"
-digital_ocean_v1_api_key:         "{{ enc_do_v1_api_key }}"
+digital_ocean_api_token:         "{{ enc_do_v2_api_key }}"
 digital_ocean_size_id:            "{{ do_size_id | default('63') }}"
 digital_ocean_image_id:           "{{ do_image_id | default('9801950') }}"
 digital_ocean_name:               "{{ hostname }}"

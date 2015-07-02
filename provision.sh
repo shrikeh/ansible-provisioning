@@ -5,11 +5,17 @@ function _echo() {
   tput sgr0;
 }
 
+function _command_exists() {
+  local COMMAND=${1};
+  command -v "${COMMAND}" >/dev/null 2>&1  || return 1;
+}
+
 function _get_ansible_plugins() {
   local ANSIBLE_ACTION_PLUGINS_DIR=${1};
   if [ ! -d "${ANSIBLE_ACTION_PLUGINS_DIR}" ]; then
+    _echo "Installing ansible plugins to ${ANSIBLE_ACTION_PLUGINS_DIR}";
     mkdir -p ${ANSIBLE_ACTION_PLUGINS_DIR};
-    git clone https://github.com/jurgenhaas/ansible-plugin-serverdensity.git "${ANSIBLE_ACTION_PLUGINS_DIR}/server-density";
+    git clone --quiet https://github.com/jurgenhaas/ansible-plugin-serverdensity.git "${ANSIBLE_ACTION_PLUGINS_DIR}/server-density";
   fi
   }
 
@@ -19,14 +25,15 @@ function _get_ansible_plugins() {
 function _get_ansible_galaxy_roles() {
   local GALAXY_ROLES_FILE=${1};
   local GALAXY_ROLES_PATH=${2};
-
-  _echo 'Installing ansible roles from Galaxy';
-  mkdir -p "${GALAXY_ROLES_PATH}";
-  ansible-galaxy install \
-    -r "${GALAXY_ROLES_FILE}" \
-    -p "${GALAXY_ROLES_PATH}" \
-    --ignore-errors \
-  ;
+  if [ ! -d "${GALAXY_ROLES_PATH}" ]; then
+    _echo 'Installing ansible roles from Galaxy';
+    mkdir -p "${GALAXY_ROLES_PATH}";
+    ansible-galaxy install \
+      -r "${GALAXY_ROLES_FILE}" \
+      -p "${GALAXY_ROLES_PATH}" \
+      --ignore-errors \
+      ;
+  fi
 }
 
 # Runs the playbook itself
@@ -47,6 +54,7 @@ function _run_playbook() {
     export RAX_REGION='DFW'; \
     ansible-playbook -i "${INVENTORY_FILE}" \
       --user="${REMOTE_USER}" \
+      -vvvv \
       --vault-password-file  "${VAULT_PASSWORD_FILE}" \
       "${PLAYBOOK_PATH}" \
   );
@@ -54,6 +62,8 @@ function _run_playbook() {
 
 function provision_box() {
 
+  local ANSIBLE_CHECKOUT_PATH='./.ansible';
+  local ANSIBLE_VERSION='v1.9.2-1';
   local ANSIBLE_ROLES_FILE='./ansible/requirements.yml';
   local ANSIBLE_ROLES_PATH='./ansible/galaxy';
   local ANSIBLE_ACTION_PLUGINS_PATH='./ansible/plugins/action_plugins';
@@ -68,8 +78,8 @@ function provision_box() {
 
   local -a ARGV=("${!1}");
 
-  while [[ ${#} > 0 ]]; do
-    key="${1}"
+  while [[ "${#}" > 0 ]]; do
+    key="${1}";
     case $key in
       -h|--host)
         local PROVISION_HOSTNAME="${2}";
@@ -126,6 +136,14 @@ function provision_box() {
     shift
   done
 
+  if [ ! -d "${ANSIBLE_CHECKOUT_PATH}" ]; then
+    git clone --quiet --recursive git://github.com/ansible/ansible.git ${ANSIBLE_CHECKOUT_PATH}
+  fi
+  ( cd ${ANSIBLE_CHECKOUT_PATH}; \
+    git checkout "${ANSIBLE_VERSION}"; \
+    git pull; \
+  );
+
   # Test files needed exist
 
   if [ ! -e "${INVENTORY_FILE}" ]; then
@@ -150,29 +168,31 @@ function provision_box() {
     fi
     _echo "Creating vault password file at ${ANSIBLE_VAULT_PASSWORD_FILE}";
     echo "${ANSIBLE_VAULT_PASSWORD}" > "${ANSIBLE_VAULT_PASSWORD_FILE}";
-
   fi
+
 
   # Make sure we have virtualenv
   _echo 'Updating pip';
   pip install --upgrade --quiet pip;
 
-  _echo 'Installing virtualenv';
-  pip install --quiet --upgrade virtualenv virtualenvwrapper;
+  if ! _command_exists 'virtualenv'; then
+    _echo 'Installing virtualenv';
+    pip install --quiet --upgrade virtualenv virtualenvwrapper;
+  fi
 
   # Start and run the virtualenv
-
-    _echo "Creating virtualenv ${ANSIBLE_VENV}";
-    /usr/local/bin/virtualenv ${ANSIBLE_VENV};
-    source ./${ANSIBLE_VENV}/bin/activate
+  _echo "Creating virtualenv ${ANSIBLE_VENV}";
+  virtualenv ${ANSIBLE_VENV};
+  source ./${ANSIBLE_VENV}/bin/activate
 
 
   # Install all the virtualenv requirements
   _echo "Installing module requirements via pip from ${REQUIREMENTS_PIP_FILE}";
   pip install --quiet -r "${REQUIREMENTS_PIP_FILE}";
 
-  _echo "Installing ansible plugins to ${ANSIBLE_ACTION_PLUGINS_PATH}";
   _get_ansible_plugins "${ANSIBLE_ACTION_PLUGINS_PATH}";
+
+  source "${ANSIBLE_CHECKOUT_PATH}/hacking/env-setup"
 
   # Get the galaxy roles and install them
   _get_ansible_galaxy_roles "${ANSIBLE_ROLES_FILE}" "${ANSIBLE_ROLES_PATH}";

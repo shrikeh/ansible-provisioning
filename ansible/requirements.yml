@@ -9,5 +9,6 @@
 - src:      debops.rsyslog
 - src:      resmo.fail2ban
 - src:      Rackor3000.sudo
+  name:     role_sudo
 - src:      DrMegahertz.cloudflare
 ...

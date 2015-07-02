@@ -1,2 +1,4 @@
 [internal-services]
-'Inviqa HR Apps' dome9=yes
+inviqa-prod-hr
+inviqa-prod-api
+inviqa-prod-teamup
