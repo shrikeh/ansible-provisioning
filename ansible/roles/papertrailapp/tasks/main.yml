@@ -1,9 +1,14 @@
 ---
+- debug:
+    var: ansible_version
+
 - name: Find out which type of config is present for logging
-  shell: "ls -d /etc/*syslog*"
-  register: papertrailapp_logger
+  stat:
+    path: /etc/ryslog.conf
+  register: papertrailapp_rsyslog
+  tags: papertrailapp
 
 - include: rsyslog.yml
-  when: papertrailapp_logger.stdout.find('/etc/ryslog.conf')
-
+  when: papertrailapp_rsyslog.stat.exists is defined and papertrailapp_rsyslog.stat.exists
+  tags: papertrailapp
 ...

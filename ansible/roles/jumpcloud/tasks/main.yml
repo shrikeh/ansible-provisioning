@@ -3,15 +3,26 @@
   stat:
     path: /opt/jc
   register: jc_installed
+  tags: jumpcloud
 
 - name:   Update time
-  shell:  "ntpdate -u pool.ntp.org"
+  command:  'ntpdate -u pool.ntp.org'
+  args:
+    warn: true
+  ignore_errors: yes
+  tags: jumpcloud
 
 - name: Install JumpCloud
   shell: "curl --header 'x-connect-key: {{ jumpcloud_x_connect_key | mandatory }}' {{ jumpcloud_x_connect_url | mandatory }} | bash"
-  when: "not jc_installed.isdir"
+  args:
+    executable: /usr/bin/bash
+  when: not jc_installed.stat.isdir
+  tags: jumpcloud
 
 - name: Restart the JCagent
-  service: name=jcagent state=restarted
-  when: "not jc_installed.isdir"
+  service:
+    name:  jcagent
+    state: restarted
+  when: not jc_installed.stat.isdir
+  tags: jumpcloud
 ...

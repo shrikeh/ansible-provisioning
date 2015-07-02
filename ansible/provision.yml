@@ -47,11 +47,17 @@
   roles:
   - { role: qualysguard }
 
-- hosts: dome9
-  roles:
-    - { role: dome9 }
+#- hosts: dome9
+#  roles:
+#    - { role: dome9 }
 
-- hosts: qualysguard
+- hosts: serverpilot
+  connection: local
+  gather_facts: false
+  roles:
+    - { role: serverpilot }
+
+- hosts: cloudflare
   connection: local
   gather_facts: false
   roles:
