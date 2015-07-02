@@ -1,5 +1,10 @@
----    
+---
 - name: Name the server
+  set_fact:
+    name: "{{ inventory_hostname }}"
+  when: name is not defined
+
+- name: Create the server hostname
   set_fact:
     hostname: "{{ name | regex_replace('\\W', '-') | lower }}"
   when: hostname is not defined

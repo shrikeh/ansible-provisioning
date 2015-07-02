@@ -64,6 +64,7 @@ function provision_box() {
 
   local ANSIBLE_CHECKOUT_PATH='./.ansible';
   local ANSIBLE_VERSION='v1.9.2-1';
+  local ANSIBLE_VERSION='devel';
   local ANSIBLE_ROLES_FILE='./ansible/requirements.yml';
   local ANSIBLE_ROLES_PATH='./ansible/galaxy';
   local ANSIBLE_ACTION_PLUGINS_PATH='./ansible/plugins/action_plugins';
@@ -141,7 +142,7 @@ function provision_box() {
   fi
   ( cd ${ANSIBLE_CHECKOUT_PATH}; \
     git checkout "${ANSIBLE_VERSION}"; \
-    git pull; \
+    git pull --recurse-submodules; \
   );
 
   # Test files needed exist
