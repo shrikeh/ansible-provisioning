@@ -83,7 +83,10 @@
     url: "{{ serverpilot_api_endpoint_apps }}"
     HEADER_Content-Type: 'application/json'
     body:
-      name: "{{ serverpilot_app_name }}"
+      name: "{{ serverpilot_app.name }}"
+      sysuserid: "{{ serverpilot_system_user }}"
+      domains:  "{{ serverpilot_app.domains }}"
+      runtime: "{{ serverpilot_app_runtime }}"
     body_format:  json
     force_basic_auth: yes
     method: POST
@@ -91,7 +94,7 @@
     password: "{{ serverpilot_api_key }}"
     status_code: 200,409
   delegate_to: localhost
-  when: serverpilot_app_name is defined
+  when: serverpilot_app is defined
   tags: serverpilot
 
 

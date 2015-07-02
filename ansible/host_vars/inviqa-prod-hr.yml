@@ -4,4 +4,8 @@ name: Inviqa HR Apps
 hostname: inviqa-prod-hr
 dome9: yes
 serverpilot: yes
+serverpilot_app:
+  name: 'inviqahrapps'
+  domains:
+    - 'hr.inviqa.com'
 ...
