@@ -25,15 +25,15 @@ function _get_ansible_plugins() {
 function _get_ansible_galaxy_roles() {
   local GALAXY_ROLES_FILE=${1};
   local GALAXY_ROLES_PATH=${2};
-  if [ ! -d "${GALAXY_ROLES_PATH}" ]; then
-    _echo 'Installing ansible roles from Galaxy';
+    _echo "Installing Ansible Galaxy roles found in ${ANSIBLE_ROLES_FILE} into ${GALAXY_ROLES_PATH}";
     mkdir -p "${GALAXY_ROLES_PATH}";
-    ansible-galaxy install \
-      -r "${GALAXY_ROLES_FILE}" \
-      -p "${GALAXY_ROLES_PATH}" \
-      --ignore-errors \
-      ;
-  fi
+    if [ ! "$(ls -A ${GALAXY_ROLES_PATH})" ]; then
+      ansible-galaxy install \
+        -r "${GALAXY_ROLES_FILE}" \
+        -p "${GALAXY_ROLES_PATH}" \
+        --ignore-errors \
+        ;
+    fi
 }
 
 # Runs the playbook itself
@@ -64,7 +64,6 @@ function provision_box() {
 
   local ANSIBLE_CHECKOUT_PATH='./.ansible';
   local ANSIBLE_VERSION='v1.9.2-1';
-  #local ANSIBLE_VERSION='devel';
   local ANSIBLE_ROLES_FILE='./ansible/requirements.yml';
   local ANSIBLE_ROLES_PATH='./ansible/galaxy';
   local ANSIBLE_ACTION_PLUGINS_PATH='./ansible/plugins/action_plugins';
@@ -73,6 +72,7 @@ function provision_box() {
   local INVENTORY_FILE='./inventory';
   local PLAYBOOK_PATH='./ansible/provision.yml';
   local ANSIBLE_VENV='venv';
+  local ANSIBLE_INSTALLER_URI='https://raw.githubusercontent.com/shrikeh/ansible-virtualenv/master/init.sh';
 
   local ANSIBLE_VAULT_PASSWORD_FILE=~/.provision_vault_password;
   local SKIP_VENV=false;
@@ -82,8 +82,8 @@ function provision_box() {
   while [[ "${#}" > 0 ]]; do
     key="${1}";
     case $key in
-      -h|--host)
-        local PROVISION_HOSTNAME="${2}";
+      ---tags)
+        local ANSIBLE_TAGS="${2}";
       shift
       ;;
       -i|--inventory)
@@ -137,17 +137,6 @@ function provision_box() {
     shift
   done
 
-  if [ ! -d "${ANSIBLE_CHECKOUT_PATH}" ]; then
-    git clone --quiet --recursive git://github.com/ansible/ansible.git ${ANSIBLE_CHECKOUT_PATH}
-  fi
-  ( cd ${ANSIBLE_CHECKOUT_PATH}; \
-    git checkout "${ANSIBLE_VERSION}"; \
-    git pull --recurse-submodules; \
-    git submodule update --init v2/ansible/modules/core; \
-    git submodule update --init v2/ansible/modules/extras; \
-
-  );
-
   # Test files needed exist
 
   if [ ! -e "${INVENTORY_FILE}" ]; then
@@ -174,29 +163,17 @@ function provision_box() {
     echo "${ANSIBLE_VAULT_PASSWORD}" > "${ANSIBLE_VAULT_PASSWORD_FILE}";
   fi
 
-
-  # Make sure we have virtualenv
-  _echo 'Updating pip';
-  pip install --upgrade --quiet pip;
-
-  if ! _command_exists 'virtualenv'; then
-    _echo 'Installing virtualenv';
-    pip install --quiet --upgrade virtualenv virtualenvwrapper;
-  fi
-
-  # Start and run the virtualenv
-  _echo "Creating virtualenv ${ANSIBLE_VENV}";
-  virtualenv ${ANSIBLE_VENV};
-  source ./${ANSIBLE_VENV}/bin/activate
-
+  . <(curl -L --silent "${ANSIBLE_INSTALLER_URI}") \
+    -d "${ANSIBLE_CHECKOUT_PATH}" \
+    --venv "${ANSIBLE_VENV}" \
+    --branch "${ANSIBLE_VERSION}" \
+  ;
 
   # Install all the virtualenv requirements
   _echo "Installing module requirements via pip from ${REQUIREMENTS_PIP_FILE}";
   pip install --quiet -r "${REQUIREMENTS_PIP_FILE}";
 
   _get_ansible_plugins "${ANSIBLE_ACTION_PLUGINS_PATH}";
-
-  source "${ANSIBLE_CHECKOUT_PATH}/hacking/env-setup"
 
   # Get the galaxy roles and install them
   _get_ansible_galaxy_roles "${ANSIBLE_ROLES_FILE}" "${ANSIBLE_ROLES_PATH}";
