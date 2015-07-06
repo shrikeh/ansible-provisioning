@@ -165,8 +165,9 @@ function provision_box() {
 
   . <(curl -L --silent "${ANSIBLE_INSTALLER_URI}") \
     -d "${ANSIBLE_CHECKOUT_PATH}" \
-    --venv "${ANSIBLE_VENV}" \
-    --branch "${ANSIBLE_VERSION}" \
+    --venv "${ANSIBLE_VENV}" \        # Name of the virtualenv
+    --branch "${ANSIBLE_VERSION}" \   # Version/branch
+    --do \                            # Digital Ocean support
   ;
 
   # Install all the virtualenv requirements

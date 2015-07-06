@@ -1,7 +1,2 @@
-paramiko
-PyYAML
-Jinja2
-httplib2
 dopy
 pyrax
-six>=1.9.0
