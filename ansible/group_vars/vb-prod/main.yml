@@ -2,12 +2,12 @@
 qualysguard:        yes
 server-density:     yes
 server_environment: production
-sd_group: 'VB'
+sd_group: 'VB Production'
 location:
   countryCode:  'gb'
   countryName:  'United Kingdom'
   text:         'London'
-provider: Rackspace
+provider: Digital Ocean
 
 dome9_secgroups:
   - 'Inviqa'
