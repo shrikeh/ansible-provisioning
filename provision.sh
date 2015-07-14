@@ -49,8 +49,8 @@ function _run_playbook() {
   ( export ANSIBLE_ROLES_PATH=${1}; \
     export ANSIBLE_ACTION_PLUGINS=${2}; \
     export ANSIBLE_HOST_KEY_CHECKING='no'; \
-    export RAX_USERNAME='leftfielddigital'; \
-    export RAX_API_KEY='bbb3943746f0d83ec9102333c4a9c716'; \
+    export RAX_USERNAME=''; \
+    export RAX_API_KEY=''; \
     export RAX_REGION='DFW'; \
     ansible-playbook -i "${INVENTORY_FILE}" \
       --user="${REMOTE_USER}" \
